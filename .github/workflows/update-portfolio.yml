@@ -2,7 +2,7 @@ name: Update Portfolio Prices
 
 on:
   schedule:
-    - cron: '0 23 * * *'  # primo di ogni mese alle 8:00 UTC
+    - cron: '0 23 * * *'  # ogni giorno a mezzanotte ora italiana
   workflow_dispatch:       # lancio manuale
 
 jobs:
