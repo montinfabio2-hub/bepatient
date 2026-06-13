@@ -1,0 +1,224 @@
+name: Update Portfolio Prices
+
+on:
+  schedule:
+    - cron: '0 23 * * *'  # ogni giorno a mezzanotte ora italiana
+  workflow_dispatch:       # lancio manuale
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch prices and update site
+        run: |
+          python3 << 'PYEOF'
+          import urllib.request, json, re, os
+          from datetime import date, datetime
+
+          # ETF symbols on Yahoo Finance
+          etfs = {
+            'UST':  'UST.PA',
+            'EUNL': 'EUNL.DE',
+            'VWCE': 'VWCE.DE',
+            'IS3R': 'IS3R.DE',
+          }
+
+          def fetch_price(symbol):
+            url = f"https://query2.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1mo&range=10y"
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            try:
+              with urllib.request.urlopen(req, timeout=15) as r:
+                data = json.loads(r.read())
+              result = data['chart']['result'][0]
+              timestamps = result['timestamp']
+              closes = result['indicators']['adjclose'][0]['adjclose']
+              # Build month -> price dict
+              monthly = {}
+              for ts, price in zip(timestamps, closes):
+                if price:
+                  m = datetime.utcfromtimestamp(ts).strftime('%Y-%m')
+                  monthly[m] = round(price, 4)
+              return monthly
+            except Exception as e:
+              print(f"Error fetching {symbol}: {e}")
+              return {}
+
+          print("Fetching historical prices...")
+          prices = {}
+          for ticker, symbol in etfs.items():
+            prices[ticker] = fetch_price(symbol)
+            print(f"  {ticker}: {len(prices[ticker])} months")
+
+          # Purchase history
+          purchases = [
+            ("2023-08-17","UST",7,54.625),("2023-08-17","UST",3,54.625),
+            ("2024-07-08","UST",46,75.90),("2025-04-04","UST",15,67.85),
+            ("2025-07-22","UST",37,79.85),
+            ("2024-04-25","EUNL",22,88.60),("2024-05-31","EUNL",26,90.96),
+            ("2024-07-19","EUNL",26,94.60),("2025-01-08","EUNL",31,104.54),
+            ("2025-04-04","EUNL",11,92.25),("2025-08-01","EUNL",15,103.43),
+            ("2025-09-30","EUNL",34,107.348),("2025-11-07","EUNL",22,109.00),
+            ("2026-01-20","EUNL",8,112.18),("2026-02-26","EUNL",7,113.73),
+            ("2026-03-13","EUNL",7,111.84),("2026-05-14","EUNL",13,117.94),
+            ("2021-01-04","IS3R",8,48.42),("2021-03-01","IS3R",11,49.63),
+            ("2021-04-05","IS3R",10,52.06),("2021-06-01","IS3R",5,51.52),
+            ("2021-07-05","IS3R",5,53.55),("2021-08-03","IS3R",5,54.08),
+            ("2021-09-01","IS3R",5,56.06),("2021-10-01","IS3R",5,54.53),
+            ("2021-11-19","IS3R",5,60.54),("2021-12-02","IS3R",4,58.25),
+            ("2022-01-03","IS3R",5,59.64),("2022-02-18","IS3R",5,53.15),
+            ("2022-04-22","IS3R",10,55.02),("2022-05-09","IS3R",6,51.44),
+            ("2022-06-13","IS3R",6,50.31),("2022-09-16","IS3R",11,51.90),
+            ("2022-12-02","IS3R",11,54.13),("2022-12-19","IS3R",12,51.62),
+            ("2023-01-31","IS3R",8,50.96),("2023-02-10","IS3R",8,51.91),
+            ("2023-03-10","IS3R",8,50.44),("2023-04-26","IS3R",8,50.30),
+            ("2023-06-27","IS3R",16,50.63),("2023-08-11","IS3R",16,51.70),
+            ("2024-08-02","IS3R",34,67.35),("2024-08-02","IS3R",1,67.35),
+            ("2025-11-07","VWCE",21,141.98),("2025-12-17","VWCE",21,142.00),
+            ("2026-01-20","VWCE",20,146.70),
+          ]
+          purchases.sort(key=lambda x: x[0])
+
+          # Build monthly portfolio value vs cost
+          from datetime import date
+          from collections import defaultdict
+
+          start = date(2021,1,1)
+          today = date.today()
+          months = []
+          d = start
+          while d <= today:
+            months.append(d.strftime('%Y-%m'))
+            d = date(d.year+1,1,1) if d.month==12 else date(d.year,d.month+1,1)
+
+          holdings = defaultdict(lambda: {'qty':0,'cost':0.0})
+          pi = 0
+          monthly_data = []
+
+          for month in months:
+            while pi < len(purchases) and purchases[pi][0][:7] == month:
+              _, t, q, p = purchases[pi]
+              holdings[t]['qty'] += q
+              holdings[t]['cost'] += q*p
+              pi += 1
+
+            total_cost = sum(v['cost'] for v in holdings.values())
+            if total_cost == 0:
+              continue
+
+            # Calculate market value using closest available price
+            total_value = 0.0
+            for ticker, h in holdings.items():
+              if h['qty'] == 0:
+                continue
+              p_data = prices.get(ticker, {})
+              # Find price for this month or nearest previous
+              price = None
+              for m_back in [month] + [months[max(0,months.index(month)-i)] for i in range(1,6)]:
+                if m_back in p_data:
+                  price = p_data[m_back]
+                  break
+              if price:
+                total_value += h['qty'] * price
+              else:
+                total_value += h['cost']  # fallback to cost
+
+            perf_pct = round((total_value - total_cost) / total_cost * 100, 2)
+            monthly_data.append({'m': month, 'pct': perf_pct})
+
+          print(f"Monthly data points: {len(monthly_data)}")
+          if monthly_data:
+            print(f"Latest: {monthly_data[-1]}")
+
+          # Build SVG chart
+          data = monthly_data
+          N = len(data)
+          if N < 2:
+            print("Not enough data")
+            exit(0)
+
+          W, H = 420, 240
+          pl, pr, pt, pb = 48, 14, 14, 32
+          gW = W - pl - pr
+          gH = H - pt - pb
+          itM = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic']
+
+          def fmt_m(s):
+            p = s.split('-')
+            return itM[int(p[1])-1] + " '" + p[0][2:]
+
+          all_pcts = [m['pct'] for m in data]
+          min_v = min(min(all_pcts) * 1.1, -5)
+          max_v = max(max(all_pcts) * 1.1, 10)
+
+          def xp(i): return pl + (i/(N-1))*gW
+          def yp(v): return pt + gH*(1 - (v-min_v)/(max_v-min_v))
+
+          parts = [f'<svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">']
+
+          # Y grid ticks
+          import math
+          step = 10 if max_v > 30 else 5
+          ticks = list(range(int(math.floor(min_v/step)*step), int(math.ceil(max_v/step)*step)+1, step))
+          for v in ticks:
+            y = yp(v)
+            if pt <= y <= pt+gH:
+              col = 'rgba(26,26,24,0.05)'
+              parts.append(f'<line x1="{pl}" y1="{y:.1f}" x2="{pl+gW}" y2="{y:.1f}" stroke="{col}" stroke-width="1"/>')
+              sign = '+' if v > 0 else ''
+              parts.append(f'<text x="{pl-5}" y="{y+3.5:.1f}" text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="#AEADA8">{sign}{v}%</text>')
+
+          # Zero line
+          y0 = yp(0)
+          parts.append(f'<line x1="{pl}" y1="{y0:.1f}" x2="{pl+gW}" y2="{y0:.1f}" stroke="rgba(26,26,24,0.2)" stroke-width="1" stroke-dasharray="4,3"/>')
+
+          # X labels every 6 months
+          for i, m in enumerate(data):
+            if i % 6 == 0:
+              parts.append(f'<text x="{xp(i):.1f}" y="{H-8}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#AEADA8">{fmt_m(m["m"])}</text>')
+
+          # Area fill (green above zero, subtle)
+          area_pts = ' '.join(f'{xp(i):.1f},{yp(m["pct"]):.1f}' for i,m in enumerate(data))
+          area_pts += f' {xp(N-1):.1f},{y0:.1f} {xp(0):.1f},{y0:.1f}'
+          parts.append(f'<polygon points="{area_pts}" fill="rgba(44,74,62,0.10)"/>')
+
+          # Line
+          line_pts = ' '.join(f'{xp(i):.1f},{yp(m["pct"]):.1f}' for i,m in enumerate(data))
+          parts.append(f'<polyline points="{line_pts}" fill="none" stroke="#2C4A3E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>')
+
+          # Last point
+          lx, ly = xp(N-1), yp(data[-1]['pct'])
+          parts.append(f'<circle cx="{lx:.1f}" cy="{ly:.1f}" r="4" fill="#2C4A3E" stroke="#F7F5F0" stroke-width="2"/>')
+          sign = '+' if data[-1]['pct'] >= 0 else ''
+          parts.append(f'<text x="{lx-8:.1f}" y="{ly-10:.1f}" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="#2C4A3E">{sign}{data[-1]["pct"]}%</text>')
+
+          parts.append('</svg>')
+          new_svg = '\n'.join(parts)
+
+          # Update index.html
+          with open('index.html','r') as f:
+            html = f.read()
+
+          # Replace existing SVG chart
+          html = re.sub(r'<svg viewBox="0 0 420 240"[^>]*>.*?</svg>', new_svg, html, flags=re.DOTALL)
+
+          with open('index.html','w') as f:
+            f.write(html)
+          print("index.html updated")
+          PYEOF
+
+      - name: Commit e push
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add index.html
+          git diff --staged --quiet || git commit -m "Auto-update portfolio chart $(date +'%d/%m/%Y')"
+          git push
