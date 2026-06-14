@@ -15,9 +15,9 @@ data = urllib.parse.urlencode({
 req = urllib.request.Request('https://www.strava.com/oauth/token', data=data)
 token_data = json.loads(urllib.request.urlopen(req).read())
 access_token = token_data['access_token']
-print(f"Token OK")
+print("Token OK")
 
-# Step 2: fetch all activities and sum running km
+# Step 2: fetch all running activities from Strava
 page = 1
 total_m = 0
 while True:
@@ -33,8 +33,10 @@ while True:
     if len(activities) < 100:
         break
 
-total_km = round(total_m / 1000, 1)
-print(f"Km totali: {total_km}")
+# Base fissa 903.2 km (Nike + Garmin pre-Strava) + km nuovi da Strava
+KM_OFFSET = 903.2
+total_km = round(total_m / 1000 + KM_OFFSET, 1)
+print(f"Km da Strava: {round(total_m/1000,1)} + base {KM_OFFSET} = {total_km}")
 
 # Step 3: update index.html
 with open('index.html', 'r') as f:
