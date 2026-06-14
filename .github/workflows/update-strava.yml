@@ -22,10 +22,11 @@ jobs:
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
         run: python3 strava_update.py
 
-      - name: Commit e push
+      - - name: Commit e push
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+          git pull --rebase
           git add index.html
           git diff --staged --quiet || git commit -m "Auto-update km Strava $(date +'%d/%m/%Y')"
           git push
