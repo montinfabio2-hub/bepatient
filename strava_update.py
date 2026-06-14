@@ -33,10 +33,10 @@ while True:
     if len(activities) < 100:
         break
 
-# Add offset for km run before Strava (903 total - 531 on Strava = 372)
-KM_OFFSET = 372.0
+# Base fissa 903.2 km (Nike + Garmin pre-Strava) + km nuovi da Strava
+KM_OFFSET = 903.2
 total_km = round(total_m / 1000 + KM_OFFSET, 1)
-print(f"Km da Strava: {round(total_m/1000, 1)} + offset {KM_OFFSET} = {total_km}")
+print(f"Km da Strava: {round(total_m/1000,1)} + base {KM_OFFSET} = {total_km}")
 
 # Step 3: update index.html
 with open('index.html', 'r') as f:
