@@ -240,75 +240,71 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 
 <div class="page" id="page-portfolio">
 
-  <!-- TOP ROW: boxes + chart -->
-  <div style="display:grid;grid-template-columns:180px 1fr;gap:1.5rem;align-items:start;margin-bottom:1.5rem">
-
-    <!-- BOXES -->
-    <div style="display:flex;flex-direction:column;gap:1rem">
-      <button id="tab-personal" onclick="switchPortfolio('personal')"
-        style="background:var(--ink);color:var(--cream);border:none;border-radius:2px;padding:1.2rem;text-align:left;cursor:pointer;transition:opacity 0.2s">
-        <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.6;margin-bottom:6px">Personal</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#6FCF97">+37.18%</div>
-      </button>
-      <button id="tab-family" onclick="switchPortfolio('family')"
-        style="background:var(--cream);color:var(--ink);border:1px solid var(--border);border-radius:2px;padding:1.2rem;text-align:left;cursor:pointer;transition:all 0.2s">
-        <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.5;margin-bottom:6px">Family</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:#2C4A3E">+-0.76%</div>
-      </button>
-    </div>
-
-    <!-- CHART -->
-    <div>
-      <p style="font-size:11px;color:var(--ink-faint);margin-bottom:0.5rem;letter-spacing:0.05em">Rendimento % nel tempo</p>
-      <div id="chart-personal"><svg viewBox="0 0 900 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
-<line x1="44" y1="112.3" x2="884" y2="112.3" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="115.3" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">0%</text>
-<line x1="44" y1="86.8" x2="884" y2="86.8" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="89.8" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+10%</text>
-<line x1="44" y1="61.4" x2="884" y2="61.4" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="64.4" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+20%</text>
-<line x1="44" y1="35.9" x2="884" y2="35.9" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="38.9" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+30%</text>
-<line x1="44" y1="10.5" x2="884" y2="10.5" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="13.5" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+40%</text>
-<line x1="44" y1="112.3" x2="884" y2="112.3" stroke="rgba(26,26,24,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
-<text x="44.0" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.21</text>
-<text x="121.5" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.21</text>
-<text x="199.1" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.22</text>
-<text x="276.6" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.22</text>
-<text x="354.2" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.23</text>
-<text x="431.7" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.23</text>
-<text x="509.2" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.24</text>
-<text x="586.8" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.24</text>
-<text x="664.3" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.25</text>
-<text x="741.8" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.25</text>
-<text x="819.4" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.26</text>
-<polygon points="44.0,111.0 56.9,107.5 69.8,104.6 82.8,103.0 95.7,104.4 108.6,102.1 121.5,97.3 134.5,93.5 147.4,94.0 160.3,90.9 173.2,76.4 186.2,84.3 199.1,91.0 212.0,111.7 224.9,110.2 237.8,106.7 250.8,123.0 263.7,126.4 276.6,123.9 289.5,121.5 302.5,118.3 315.4,114.2 328.3,109.9 341.2,116.5 354.2,120.7 367.1,118.3 380.0,123.6 392.9,123.5 405.8,123.2 418.8,121.5 431.7,119.1 444.6,114.7 457.5,108.0 470.5,101.5 483.4,94.7 496.3,88.2 509.2,81.5 522.2,74.7 535.1,68.4 548.0,69.5 560.9,71.6 573.8,65.0 586.8,74.1 599.7,73.8 612.6,69.3 625.5,64.9 638.5,60.3 651.4,55.9 664.3,60.1 677.2,61.9 690.2,63.4 703.1,65.1 716.0,57.2 728.9,49.0 741.8,48.0 754.8,43.9 767.7,44.9 780.6,39.0 793.5,43.3 806.5,43.2 819.4,43.4 832.3,39.0 845.2,37.7 858.2,30.3 871.1,25.8 884.0,17.6 884.0,112.3 44.0,112.3" fill="rgba(44,74,62,0.12)"/>
-<polyline points="44.0,111.0 56.9,107.5 69.8,104.6 82.8,103.0 95.7,104.4 108.6,102.1 121.5,97.3 134.5,93.5 147.4,94.0 160.3,90.9 173.2,76.4 186.2,84.3 199.1,91.0 212.0,111.7 224.9,110.2 237.8,106.7 250.8,123.0 263.7,126.4 276.6,123.9 289.5,121.5 302.5,118.3 315.4,114.2 328.3,109.9 341.2,116.5 354.2,120.7 367.1,118.3 380.0,123.6 392.9,123.5 405.8,123.2 418.8,121.5 431.7,119.1 444.6,114.7 457.5,108.0 470.5,101.5 483.4,94.7 496.3,88.2 509.2,81.5 522.2,74.7 535.1,68.4 548.0,69.5 560.9,71.6 573.8,65.0 586.8,74.1 599.7,73.8 612.6,69.3 625.5,64.9 638.5,60.3 651.4,55.9 664.3,60.1 677.2,61.9 690.2,63.4 703.1,65.1 716.0,57.2 728.9,49.0 741.8,48.0 754.8,43.9 767.7,44.9 780.6,39.0 793.5,43.3 806.5,43.2 819.4,43.4 832.3,39.0 845.2,37.7 858.2,30.3 871.1,25.8 884.0,17.6" fill="none" stroke="#2C4A3E" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="884.0" cy="17.6" r="3.5" fill="#2C4A3E" stroke="#F7F5F0" stroke-width="1.5"/>
-<text x="876.0" y="9.6" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="#2C4A3E">+37.18%</text>
-</svg></div>
-      <div id="chart-family" style="display:none"><svg viewBox="0 0 900 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
-<line x1="44" y1="117.3" x2="884" y2="117.3" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="120.3" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">-10%</text>
-<line x1="44" y1="81.5" x2="884" y2="81.5" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="84.5" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">-5%</text>
-<line x1="44" y1="45.8" x2="884" y2="45.8" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="48.8" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">0%</text>
-<line x1="44" y1="10.0" x2="884" y2="10.0" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
-<text x="40" y="13.0" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+5%</text>
-<line x1="44" y1="45.8" x2="884" y2="45.8" stroke="rgba(26,26,24,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
-<text x="44.0" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">11.25</text>
-<text x="764.0" y="155" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">05.26</text>
-<polygon points="44.0,45.8 164.0,45.7 284.0,33.3 404.0,112.5 524.0,82.7 644.0,71.2 764.0,60.6 884.0,51.2 884.0,45.8 44.0,45.8" fill="rgba(44,74,62,0.12)"/>
-<polyline points="44.0,45.8 164.0,45.7 284.0,33.3 404.0,112.5 524.0,82.7 644.0,71.2 764.0,60.6 884.0,51.2" fill="none" stroke="#5C8A7A" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="884.0" cy="51.2" r="3.5" fill="#5C8A7A" stroke="#F7F5F0" stroke-width="1.5"/>
-<text x="876.0" y="43.2" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="#5C8A7A">-0.76%</text>
-</svg></div>
-    </div>
+  <!-- TABS: due box piccoli -->
+  <div style="display:flex;gap:1rem;margin-bottom:1.5rem">
+    <button id="tab-personal" onclick="switchPortfolio('personal')"
+      style="padding:10px 24px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--cream);border:none;border-radius:2px;cursor:pointer;font-family:var(--fb)">
+      Personal
+    </button>
+    <button id="tab-family" onclick="switchPortfolio('family')"
+      style="padding:10px 24px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;background:transparent;color:var(--ink-muted);border:1px solid var(--border);border-radius:2px;cursor:pointer;font-family:var(--fb)">
+      Family
+    </button>
   </div>
 
-  <!-- TABLE -->
+  <!-- PERFORMANCE % grande -->
+  <div style="margin-bottom:1.5rem">
+    <div id="perf-big-personal" style="font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;line-height:1;color:#2C6E49">+37.18%</div>
+    <div id="perf-big-family"   style="font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;line-height:1;color:#2C6E49;display:none">+2.02%</div>
+    <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px">Performance totale</div>
+  </div>
+
+  <!-- GRAFICO -->
+  <div style="margin-bottom:2rem">
+    <p style="font-size:11px;color:var(--ink-faint);margin-bottom:0.5rem;letter-spacing:0.05em">Rendimento % nel tempo</p>
+    <div id="chart-personal"><svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+<line x1="44" y1="105.3" x2="884" y2="105.3" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
+<text x="40" y="108.3" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">0%</text>
+<line x1="44" y1="81.1" x2="884" y2="81.1" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
+<text x="40" y="84.1" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+10%</text>
+<line x1="44" y1="56.9" x2="884" y2="56.9" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
+<text x="40" y="59.9" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+20%</text>
+<line x1="44" y1="32.7" x2="884" y2="32.7" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
+<text x="40" y="35.7" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+30%</text>
+<line x1="44" y1="8.4" x2="884" y2="8.4" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
+<text x="40" y="11.4" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+40%</text>
+<line x1="44" y1="105.3" x2="884" y2="105.3" stroke="rgba(26,26,24,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="44.0" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.21</text>
+<text x="121.5" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.21</text>
+<text x="199.1" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.22</text>
+<text x="276.6" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.22</text>
+<text x="354.2" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.23</text>
+<text x="431.7" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.23</text>
+<text x="509.2" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.24</text>
+<text x="586.8" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.24</text>
+<text x="664.3" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.25</text>
+<text x="741.8" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">07.25</text>
+<text x="819.4" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">01.26</text>
+<polygon points="44.0,104.1 56.9,100.8 69.8,98.0 82.8,96.5 95.7,97.8 108.6,95.6 121.5,91.1 134.5,87.4 147.4,87.9 160.3,85.0 173.2,71.2 186.2,78.7 199.1,85.1 212.0,104.8 224.9,103.3 237.8,100.0 250.8,115.5 263.7,118.7 276.6,116.4 289.5,114.1 302.5,111.1 315.4,107.2 328.3,103.1 341.2,109.3 354.2,113.4 367.1,111.1 380.0,116.1 392.9,116.0 405.8,115.7 418.8,114.1 431.7,111.9 444.6,107.7 457.5,101.3 470.5,95.0 483.4,88.6 496.3,82.4 509.2,76.0 522.2,69.6 535.1,63.6 548.0,64.6 560.9,66.6 573.8,60.3 586.8,69.0 599.7,68.7 612.6,64.4 625.5,60.2 638.5,55.9 651.4,51.7 664.3,55.7 677.2,57.4 690.2,58.9 703.1,60.4 716.0,52.9 728.9,45.1 741.8,44.2 754.8,40.2 767.7,41.2 780.6,35.6 793.5,39.7 806.5,39.6 819.4,39.8 832.3,35.6 845.2,34.3 858.2,27.3 871.1,23.0 884.0,15.3 884.0,105.3 44.0,105.3" fill="rgba(44,74,62,0.10)"/>
+<polyline points="44.0,104.1 56.9,100.8 69.8,98.0 82.8,96.5 95.7,97.8 108.6,95.6 121.5,91.1 134.5,87.4 147.4,87.9 160.3,85.0 173.2,71.2 186.2,78.7 199.1,85.1 212.0,104.8 224.9,103.3 237.8,100.0 250.8,115.5 263.7,118.7 276.6,116.4 289.5,114.1 302.5,111.1 315.4,107.2 328.3,103.1 341.2,109.3 354.2,113.4 367.1,111.1 380.0,116.1 392.9,116.0 405.8,115.7 418.8,114.1 431.7,111.9 444.6,107.7 457.5,101.3 470.5,95.0 483.4,88.6 496.3,82.4 509.2,76.0 522.2,69.6 535.1,63.6 548.0,64.6 560.9,66.6 573.8,60.3 586.8,69.0 599.7,68.7 612.6,64.4 625.5,60.2 638.5,55.9 651.4,51.7 664.3,55.7 677.2,57.4 690.2,58.9 703.1,60.4 716.0,52.9 728.9,45.1 741.8,44.2 754.8,40.2 767.7,41.2 780.6,35.6 793.5,39.7 806.5,39.6 819.4,39.8 832.3,35.6 845.2,34.3 858.2,27.3 871.1,23.0 884.0,15.3" fill="none" stroke="#2C4A3E" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="884.0" cy="15.3" r="3.5" fill="#2C4A3E" stroke="#F7F5F0" stroke-width="1.5"/>
+<text x="876.0" y="7.3" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="#2C4A3E">+37.18%</text>
+</svg></div>
+    <div id="chart-family" style="display:none"><svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+<line x1="44" y1="81.9" x2="884" y2="81.9" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
+<text x="40" y="84.9" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">0%</text>
+<line x1="44" y1="8.3" x2="884" y2="8.3" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
+<text x="40" y="11.3" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">+5%</text>
+<line x1="44" y1="81.9" x2="884" y2="81.9" stroke="rgba(26,26,24,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="44.0" y="146" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">05.26</text>
+<polygon points="44.0,81.9 884.0,52.1 884.0,81.9 44.0,81.9" fill="rgba(44,74,62,0.10)"/>
+<polyline points="44.0,81.9 884.0,52.1" fill="none" stroke="#5C8A7A" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="884.0" cy="52.1" r="3.5" fill="#5C8A7A" stroke="#F7F5F0" stroke-width="1.5"/>
+<text x="876.0" y="44.1" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="#5C8A7A">+2.02%</text>
+</svg></div>
+  </div>
+
+  <!-- TABELLA -->
   <div class="perf-grid" id="perf-summary"></div>
   <table class="data-table" style="margin-top:1.5rem">
     <thead>
@@ -407,19 +403,19 @@ var activePortfolio = 'personal';
 
 function switchPortfolio(key) {
   activePortfolio = key;
-  var isPersonal = key === 'personal';
-  // Toggle chart visibility
-  document.getElementById('chart-personal').style.display = isPersonal ? 'block' : 'none';
-  document.getElementById('chart-family').style.display   = isPersonal ? 'none'  : 'block';
-  // Toggle box styles
+  var isP = key === 'personal';
+  document.getElementById('chart-personal').style.display    = isP ? 'block' : 'none';
+  document.getElementById('chart-family').style.display      = isP ? 'none'  : 'block';
+  document.getElementById('perf-big-personal').style.display = isP ? 'block' : 'none';
+  document.getElementById('perf-big-family').style.display   = isP ? 'none'  : 'block';
   var tabP = document.getElementById('tab-personal');
   var tabF = document.getElementById('tab-family');
-  tabP.style.background = isPersonal ? 'var(--ink)' : 'var(--cream)';
-  tabP.style.color      = isPersonal ? 'var(--cream)' : 'var(--ink)';
-  tabP.style.border     = isPersonal ? 'none' : '1px solid var(--border)';
-  tabF.style.background = isPersonal ? 'var(--cream)' : 'var(--ink)';
-  tabF.style.color      = isPersonal ? 'var(--ink)' : 'var(--cream)';
-  tabF.style.border     = isPersonal ? '1px solid var(--border)' : 'none';
+  tabP.style.background = isP ? 'var(--ink)' : 'transparent';
+  tabP.style.color      = isP ? 'var(--cream)' : 'var(--ink-muted)';
+  tabP.style.border     = isP ? 'none' : '1px solid var(--border)';
+  tabF.style.background = isP ? 'transparent' : 'var(--ink)';
+  tabF.style.color      = isP ? 'var(--ink-muted)' : 'var(--cream)';
+  tabF.style.border     = isP ? '1px solid var(--border)' : 'none';
   renderPortfolio();
 }
 
@@ -433,9 +429,7 @@ function renderPortfolio() {
   var totalValue    = h.reduce(function(s,x){ return s + x.qty * x.currentPrice; }, 0);
   var totalPerf     = ((totalValue - totalInvested) / totalInvested) * 100;
 
-  var cards = [
-    { label:'Performance totale', value: totalPerf }
-  ];
+  var cards = [];
   document.getElementById('perf-summary').innerHTML = cards.map(function(c) {
     var cls = c.value >= 0 ? 'positive' : 'negative';
     return '<div class="perf-card"><div class="perf-value ' + cls + '">' + fmtPct(c.value) + '</div><div class="perf-period">' + c.label + '</div></div>';
