@@ -26,6 +26,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+          git checkout -- .
           git pull --rebase
           git add index.html
           git diff --staged --quiet || git commit -m "Auto-update km Strava $(date +'%d/%m/%Y')"
