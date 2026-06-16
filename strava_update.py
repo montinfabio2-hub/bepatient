@@ -35,16 +35,31 @@ while True:
 
 # Base fissa 903.2 km (Nike + Garmin pre-Strava) + km nuovi da Strava
 KM_OFFSET = 903.2
-total_km = round(total_m / 1000 + KM_OFFSET, 1)
-print(f"Km da Strava: {round(total_m/1000,1)} + base {KM_OFFSET} = {total_km}")
+strava_km = total_m / 1000
+total_km = round(strava_km + KM_OFFSET, 1)
+print(f"Km da Strava: {round(strava_km, 1)} + base {KM_OFFSET} = {total_km}")
+
+# Format with Italian locale: 1.234,5
+def fmt_km(n):
+    # Split integer and decimal
+    parts = f"{n:.1f}".split('.')
+    integer = parts[0]
+    decimal = parts[1]
+    # Add dot thousands separator
+    if len(integer) > 3:
+        integer = integer[:-3] + '.' + integer[-3:]
+    return integer + ',' + decimal
+
+formatted = fmt_km(total_km)
+print(f"Formatted: {formatted}")
 
 # Step 3: update index.html
 with open('index.html', 'r') as f:
     html = f.read()
 
 html_new = re.sub(
-    r'id="km-total">[0-9.,]+<',
-    f'id="km-total">{total_km}<',
+    r'id="km-total">[^<]+<',
+    f'id="km-total">{formatted}<',
     html
 )
 
