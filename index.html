@@ -240,29 +240,30 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 
 <div class="page" id="page-portfolio">
 
-  <!-- TABS: due box piccoli -->
-  <div style="display:flex;gap:1rem;margin-bottom:1.5rem">
-    <button id="tab-personal" onclick="switchPortfolio('personal')"
-      style="padding:10px 24px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--cream);border:none;border-radius:2px;cursor:pointer;font-family:var(--fb)">
-      Personal
-    </button>
-    <button id="tab-family" onclick="switchPortfolio('family')"
-      style="padding:10px 24px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;background:transparent;color:var(--ink-muted);border:1px solid var(--border);border-radius:2px;cursor:pointer;font-family:var(--fb)">
-      Family
-    </button>
-  </div>
+  <!-- TOP ROW: left=tabs+perf, right=chart -->
+  <div style="display:grid;grid-template-columns:200px 1fr;gap:2rem;align-items:start;margin-bottom:2rem">
 
-  <!-- PERFORMANCE % grande -->
-  <div style="margin-bottom:1.5rem">
-    <div id="perf-big-personal" style="font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;line-height:1;color:#2C6E49">+37.18%</div>
-    <div id="perf-big-family"   style="font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;line-height:1;color:#2C6E49;display:none">+2.02%</div>
-    <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px">Performance totale</div>
-  </div>
+    <!-- LEFT: tabs + big % -->
+    <div>
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
+        <button id="tab-personal" onclick="switchPortfolio('personal')"
+          style="padding:8px 16px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:var(--ink);color:var(--cream);border:none;border-radius:2px;cursor:pointer;font-family:var(--fb)">
+          Personal
+        </button>
+        <button id="tab-family" onclick="switchPortfolio('family')"
+          style="padding:8px 16px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:transparent;color:var(--ink-muted);border:1px solid var(--border);border-radius:2px;cursor:pointer;font-family:var(--fb)">
+          Family
+        </button>
+      </div>
+      <div id="perf-big-personal" style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;color:#2C6E49">+37.18%</div>
+      <div id="perf-big-family"   style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;color:#2C6E49;display:none">+2.02%</div>
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:6px">Performance totale</div>
+    </div>
 
-  <!-- GRAFICO -->
-  <div style="margin-bottom:2rem">
-    <p style="font-size:11px;color:var(--ink-faint);margin-bottom:0.5rem;letter-spacing:0.05em">Rendimento % nel tempo</p>
-    <div id="chart-personal"><svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+    <!-- RIGHT: chart -->
+    <div>
+      <p style="font-size:11px;color:var(--ink-faint);margin-bottom:0.5rem;letter-spacing:0.05em">Rendimento % nel tempo</p>
+      <div id="chart-personal"><svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
 <line x1="44" y1="105.3" x2="884" y2="105.3" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
 <text x="40" y="108.3" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">0%</text>
 <line x1="44" y1="81.1" x2="884" y2="81.1" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
@@ -290,7 +291,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 <circle cx="884.0" cy="15.3" r="3.5" fill="#2C4A3E" stroke="#F7F5F0" stroke-width="1.5"/>
 <text x="876.0" y="7.3" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="#2C4A3E">+37.18%</text>
 </svg></div>
-    <div id="chart-family" style="display:none"><svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+      <div id="chart-family" style="display:none"><svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
 <line x1="44" y1="81.9" x2="884" y2="81.9" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
 <text x="40" y="84.9" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">0%</text>
 <line x1="44" y1="8.3" x2="884" y2="8.3" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>
@@ -302,11 +303,13 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 <circle cx="884.0" cy="52.1" r="3.5" fill="#5C8A7A" stroke="#F7F5F0" stroke-width="1.5"/>
 <text x="876.0" y="44.1" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="#5C8A7A">+2.02%</text>
 </svg></div>
+    </div>
+
   </div>
 
-  <!-- TABELLA -->
+  <!-- TABLE -->
   <div class="perf-grid" id="perf-summary"></div>
-  <table class="data-table" style="margin-top:1.5rem">
+  <table class="data-table" style="margin-top:0.5rem">
     <thead>
       <tr>
         <th>Fondo / ETF</th>
