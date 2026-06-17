@@ -135,7 +135,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
     <div>
       <div class="stat-item"><div class="stat-number">1996</div><div class="stat-label">Anno di nascita</div></div>
       <div class="stat-item"><div class="stat-number">8+</div><div class="stat-label">Anni di carriera</div></div>
-      <div class="stat-item"><div class="stat-number" id="km-total">973.6</div><div class="stat-label">Km di corsa</div></div>
+      <div class="stat-item"><div class="stat-number" id="km-total">903</div><div class="stat-label">Km di corsa</div></div>
     </div>
   </div>
 </div>
@@ -255,8 +255,8 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
           Family
         </button>
       </div>
-      <div id="perf-big-personal" style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;color:#2C6E49">+37.18%</div>
-      <div id="perf-big-family"   style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;color:#2C6E49;display:none">+2.02%</div>
+      <div id="perf-big-personal" style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;color:#2C6E49">+40.93%</div>
+      <div id="perf-big-family"   style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;color:#2C6E49;display:none">+2.91%</div>
       <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-faint);margin-top:6px">Performance totale</div>
     </div>
 
@@ -353,6 +353,58 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 </div>
 
 <script>
+
+// ── LIVE DATA from data.json (updated by GitHub Actions) ──
+var liveData = null;
+async function loadLiveData() {
+  try {
+    var res = await fetch('data.json?t=' + Date.now());
+    liveData = await res.json();
+    applyLiveData();
+  } catch(e) {
+    console.log('data.json not found, using static fallback values');
+  }
+}
+
+function applyLiveData() {
+  if (!liveData) return;
+
+  // Update km total
+  var kmEl = document.getElementById('km-total');
+  if (kmEl && liveData.km_total) {
+    kmEl.textContent = liveData.km_total.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1});
+  }
+
+  // Update portfolio prices
+  if (liveData.portfolio && liveData.portfolio.prices) {
+    var prices = liveData.portfolio.prices;
+    [portfolios.personal.holdings, portfolios.family.holdings].forEach(function(arr){
+      arr.forEach(function(h){
+        if (prices[h.ticker] !== undefined) h.currentPrice = prices[h.ticker];
+      });
+    });
+  }
+
+  // Update big performance numbers
+  if (liveData.portfolio) {
+    if (liveData.portfolio.personal && document.getElementById('perf-big-personal')) {
+      var pp = liveData.portfolio.personal.performance_pct;
+      var sign = pp >= 0 ? '+' : '';
+      document.getElementById('perf-big-personal').textContent = sign + pp.toFixed(2) + '%';
+      document.getElementById('perf-big-personal').style.color = pp >= 0 ? '#2C6E49' : '#C1440E';
+    }
+    if (liveData.portfolio.family && document.getElementById('perf-big-family')) {
+      var pf = liveData.portfolio.family.performance_pct;
+      var signF = pf >= 0 ? '+' : '';
+      document.getElementById('perf-big-family').textContent = signF + pf.toFixed(2) + '%';
+      document.getElementById('perf-big-family').style.color = pf >= 0 ? '#2C6E49' : '#C1440E';
+    }
+  }
+
+  renderPortfolio();
+loadLiveData();
+}
+
 // PAGE NAVIGATION
 function showPage(id) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
@@ -386,16 +438,16 @@ setInterval(rotateText, 2200);
 var portfolios = {
   personal: {
     holdings: [
-      { name:'Amundi Core Nasdaq-100 Swap UCITS ETF Acc', isin:'LU1829221024', ticker:'UST',  exchange:'EPA', qty:108, avgPrice:74.16,  currentPrice:105.664,  lastBuy:'—', link:'https://www.amundietf.it/it/privati/products/equity/amundi-core-nasdaq100-swap-ucits-etf-acc/lu1829221024', yahooSymbol:'UST.PA'  },
-      { name:'iShares Core MSCI World UCITS ETF USD (Acc)',isin:'IE00B4L5Y983',ticker:'EUNL', exchange:'TDG', qty:229, avgPrice:102.54, currentPrice:123.44, lastBuy:'09.06.2026', lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund',     yahooSymbol:'EUNL.DE' },
-      { name:'Vanguard FTSE All-World UCITS ETF (USD) Acc',isin:'IE00BK5BQT80',ticker:'VWCE', exchange:'TDG', qty:62,  avgPrice:143.50, currentPrice:163.14, lastBuy:'—', link:'https://www.it.vanguard/investitori-privati/prodotti/etf/azionario/9679/ftse-all-world-ucits-etf-usd-accumulating', yahooSymbol:'VWCE.DE' },
-      { name:'iShares Edge MSCI World Momentum Factor UCITS ETF USD (Acc)', isin:'IE00BP3QZ825', ticker:'IS3R', exchange:'XET', qty:228, avgPrice:54.74, currentPrice:99.66, lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/270051/ishares-msci-world-momentum-factor-ucits-etf?switchLocale=y&siteEntryPassthrough=true', yahooSymbol:'IS3R.DE' },
+      { name:'Amundi Core Nasdaq-100 Swap UCITS ETF Acc', isin:'LU1829221024', ticker:'UST',  exchange:'EPA', qty:108, avgPrice:74.16,  currentPrice:107.453,  lastBuy:'—', link:'https://www.amundietf.it/it/privati/products/equity/amundi-core-nasdaq100-swap-ucits-etf-acc/lu1829221024', yahooSymbol:'UST.PA'  },
+      { name:'iShares Core MSCI World UCITS ETF USD (Acc)',isin:'IE00B4L5Y983',ticker:'EUNL', exchange:'TDG', qty:229, avgPrice:102.54, currentPrice:124.525, lastBuy:'09.06.2026', lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund',     yahooSymbol:'EUNL.DE' },
+      { name:'Vanguard FTSE All-World UCITS ETF (USD) Acc',isin:'IE00BK5BQT80',ticker:'VWCE', exchange:'TDG', qty:62,  avgPrice:143.50, currentPrice:164.88, lastBuy:'—', link:'https://www.it.vanguard/investitori-privati/prodotti/etf/azionario/9679/ftse-all-world-ucits-etf-usd-accumulating', yahooSymbol:'VWCE.DE' },
+      { name:'iShares Edge MSCI World Momentum Factor UCITS ETF USD (Acc)', isin:'IE00BP3QZ825', ticker:'IS3R', exchange:'XET', qty:228, avgPrice:54.74, currentPrice:105.98, lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/270051/ishares-msci-world-momentum-factor-ucits-etf?switchLocale=y&siteEntryPassthrough=true', yahooSymbol:'IS3R.DE' },
     ],
     PERF_YTD:0.0, PERF_1Y:0.0, PERF_INCEPTION:0.0
   },
   family: {
     holdings: [
-      { name:'iShares Core MSCI World UCITS ETF USD (Acc)', isin:'IE00B4L5Y983', ticker:'EUNL', exchange:'TDG', qty:413, avgPrice:121.00, currentPrice:123.44, lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund', yahooSymbol:'EUNL.DE' },
+      { name:'iShares Core MSCI World UCITS ETF USD (Acc)', isin:'IE00B4L5Y983', ticker:'EUNL', exchange:'TDG', qty:413, avgPrice:121.00, currentPrice:124.525, lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund', yahooSymbol:'EUNL.DE' },
     ],
     PERF_YTD:0.0, PERF_1Y:0.0, PERF_INCEPTION:0.0
   }
