@@ -366,6 +366,65 @@ async function loadLiveData() {
   }
 }
 
+
+function renderHistoryChart(history, containerId, color) {
+  var container = document.getElementById(containerId);
+  if (!container || !history || history.length < 2) return;
+
+  var data = history;
+  var N = data.length;
+  var W = 900, H = 150;
+  var pl = 44, pr = 16, pt = 8, pb = 24;
+  var gW = W - pl - pr, gH = H - pt - pb;
+
+  var allPcts = data.map(function(m){ return m.pct; });
+  var minV = Math.min(Math.min.apply(null, allPcts) - 3, -3);
+  var maxV = Math.max(Math.max.apply(null, allPcts) + 3, 5);
+  var step = maxV > 30 ? 10 : 5;
+
+  function xp(i){ return pl + (i/(N-1))*gW; }
+  function yp(v){ return pt + gH*(1 - (v-minV)/(maxV-minV)); }
+
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">';
+
+  var tickStart = Math.floor(minV/step)*step;
+  var tickEnd = Math.ceil(maxV/step)*step;
+  for (var v = tickStart; v <= tickEnd; v += step) {
+    var y = yp(v);
+    if (y >= pt-2 && y <= pt+gH+2) {
+      svg += '<line x1="'+pl+'" y1="'+y.toFixed(1)+'" x2="'+(pl+gW)+'" y2="'+y.toFixed(1)+'" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>';
+      var sign = v > 0 ? '+' : '';
+      svg += '<text x="'+(pl-4)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">'+sign+v+'%</text>';
+    }
+  }
+
+  var y0 = yp(0);
+  svg += '<line x1="'+pl+'" y1="'+y0.toFixed(1)+'" x2="'+(pl+gW)+'" y2="'+y0.toFixed(1)+'" stroke="rgba(26,26,24,0.2)" stroke-width="1" stroke-dasharray="4,3"/>';
+
+  for (var i = 0; i < N; i++) {
+    if (i % 6 === 0) {
+      var parts = data[i].m.split('-');
+      var label = parts[1] + '.' + parts[0].slice(2);
+      svg += '<text x="'+xp(i).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">'+label+'</text>';
+    }
+  }
+
+  var areaPts = data.map(function(m,i){ return xp(i).toFixed(1)+','+yp(m.pct).toFixed(1); }).join(' ');
+  areaPts += ' ' + xp(N-1).toFixed(1) + ',' + y0.toFixed(1) + ' ' + xp(0).toFixed(1) + ',' + y0.toFixed(1);
+  svg += '<polygon points="'+areaPts+'" fill="rgba(44,74,62,0.10)"/>';
+
+  var linePts = data.map(function(m,i){ return xp(i).toFixed(1)+','+yp(m.pct).toFixed(1); }).join(' ');
+  svg += '<polyline points="'+linePts+'" fill="none" stroke="'+color+'" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>';
+
+  var lx = xp(N-1), ly = yp(data[N-1].pct);
+  svg += '<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="3.5" fill="'+color+'" stroke="#F7F5F0" stroke-width="1.5"/>';
+  var lastSign = data[N-1].pct >= 0 ? '+' : '';
+  svg += '<text x="'+(lx-8).toFixed(1)+'" y="'+(ly-8).toFixed(1)+'" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="'+color+'">'+lastSign+data[N-1].pct+'%</text>';
+
+  svg += '</svg>';
+  container.innerHTML = svg;
+}
+
 function applyLiveData() {
   if (!liveData) return;
 
@@ -471,6 +530,16 @@ function switchPortfolio(key) {
   tabF.style.background = isP ? 'transparent' : 'var(--ink)';
   tabF.style.color      = isP ? 'var(--ink-muted)' : 'var(--cream)';
   tabF.style.border     = isP ? '1px solid var(--border)' : 'none';
+  // Render charts from history data
+  if (liveData.portfolio) {
+    if (liveData.portfolio.personal && liveData.portfolio.personal.history) {
+      renderHistoryChart(liveData.portfolio.personal.history, 'chart-personal', '#2C4A3E');
+    }
+    if (liveData.portfolio.family && liveData.portfolio.family.history) {
+      renderHistoryChart(liveData.portfolio.family.history, 'chart-family', '#5C8A7A');
+    }
+  }
+
   renderPortfolio();
 }
 
