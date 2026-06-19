@@ -2,7 +2,6 @@ import urllib.request
 import urllib.parse
 import json
 import os
-import re
 
 # Step 1: get access token
 data = urllib.parse.urlencode({
@@ -33,36 +32,22 @@ while True:
     if len(activities) < 100:
         break
 
-# Base fissa 903.2 km (Nike + Garmin pre-Strava) + km nuovi da Strava
 KM_OFFSET = 903.2
 strava_km = total_m / 1000
 total_km = round(strava_km + KM_OFFSET, 1)
 print(f"Km da Strava: {round(strava_km, 1)} + base {KM_OFFSET} = {total_km}")
 
-# Format with Italian locale: 1.234,5
-def fmt_km(n):
-    # Split integer and decimal
-    parts = f"{n:.1f}".split('.')
-    integer = parts[0]
-    decimal = parts[1]
-    # Add dot thousands separator
-    if len(integer) > 3:
-        integer = integer[:-3] + '.' + integer[-3:]
-    return integer + ',' + decimal
+# Step 3: read existing data.json (or create new)
+try:
+    with open('data.json', 'r') as f:
+        site_data = json.load(f)
+except FileNotFoundError:
+    site_data = {}
 
-formatted = fmt_km(total_km)
-print(f"Formatted: {formatted}")
+from datetime import date
+site_data['km_total'] = total_km
+site_data['km_last_update'] = str(date.today())
 
-# Step 3: update index.html
-with open('index.html', 'r') as f:
-    html = f.read()
-
-html_new = re.sub(
-    r'id="km-total">[^<]+<',
-    f'id="km-total">{formatted}<',
-    html
-)
-
-with open('index.html', 'w') as f:
-    f.write(html_new)
-print("index.html aggiornato")
+with open('data.json', 'w') as f:
+    json.dump(site_data, f, indent=2)
+print("data.json updated")
