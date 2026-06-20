@@ -1,0 +1,21 @@
+{
+  "km_total": 973.6,
+  "km_last_update": "2026-06-14",
+  "portfolio": {
+    "personal": {
+      "performance_pct": 40.93,
+      "history": []
+    },
+    "family": {
+      "performance_pct": 2.91,
+      "history": []
+    },
+    "prices": {
+      "UST": 107.453,
+      "EUNL": 124.525,
+      "IS3R": 105.98,
+      "VWCE": 164.88
+    },
+    "last_update": "2026-06-14"
+  }
+}
