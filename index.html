@@ -358,11 +358,12 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 var liveData = null;
 async function loadLiveData() {
   try {
-    var res = await fetch('data.json?t=' + Date.now());
+    var res = await fetch('data.json?t=' + Date.now(), {cache: 'no-store'});
     liveData = await res.json();
+    console.log('liveData loaded:', liveData);
     applyLiveData();
   } catch(e) {
-    console.log('data.json not found, using static fallback values');
+    console.log('data.json fetch error:', e);
   }
 }
 
