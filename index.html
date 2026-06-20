@@ -473,6 +473,7 @@ function showPage(id) {
   var nav = document.getElementById('nav-' + id);
   if (nav) nav.classList.add('active');
   if (id === 'running') setTimeout(initMap, 150);
+  if (id === 'portfolio') setTimeout(drawCharts, 50);
 }
 
 // ROLLING TEXT
@@ -530,17 +531,18 @@ function switchPortfolio(key) {
   tabF.style.background = isP ? 'transparent' : 'var(--ink)';
   tabF.style.color      = isP ? 'var(--ink-muted)' : 'var(--cream)';
   tabF.style.border     = isP ? '1px solid var(--border)' : 'none';
-  // Render charts from history data
-  if (liveData.portfolio) {
-    if (liveData.portfolio.personal && liveData.portfolio.personal.history) {
-      renderHistoryChart(liveData.portfolio.personal.history, 'chart-personal', '#2C4A3E');
-    }
-    if (liveData.portfolio.family && liveData.portfolio.family.history) {
-      renderHistoryChart(liveData.portfolio.family.history, 'chart-family', '#5C8A7A');
-    }
-  }
-
   renderPortfolio();
+  drawCharts();
+}
+
+function drawCharts() {
+  if (!liveData || !liveData.portfolio) return;
+  if (liveData.portfolio.personal && liveData.portfolio.personal.history) {
+    renderHistoryChart(liveData.portfolio.personal.history, 'chart-personal', '#2C4A3E');
+  }
+  if (liveData.portfolio.family && liveData.portfolio.family.history) {
+    renderHistoryChart(liveData.portfolio.family.history, 'chart-family', '#5C8A7A');
+  }
 }
 
 function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
