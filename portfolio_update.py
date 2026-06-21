@@ -121,6 +121,13 @@ def build_monthly(purchases, prices, end_month=None):
 history_personal = build_monthly(purchases_personal, prices)
 history_family   = build_monthly(purchases_family, prices)
 
+# Force last history point to match exact current performance (no rounding/interpolation drift)
+current_month = date.today().strftime('%Y-%m')
+if history_personal and history_personal[-1]['m'] == current_month:
+    history_personal[-1]['pct'] = perf_personal
+if history_family and history_family[-1]['m'] == current_month:
+    history_family[-1]['pct'] = perf_family
+
 # Read/update data.json
 try:
     with open('data.json', 'r') as f:
