@@ -333,13 +333,12 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
       <table class="data-table">
         <thead>
           <tr>
-            <th onclick="sortRaces('dateSort',this)">Data <span>&#8597;</span></th>
+            <th onclick="sortRaces('dateSort',this)">Data <span class="sort-arrow">&#8597;</span></th>
             <th>Luogo</th>
-            <th>Gara</th>
-            <th onclick="sortRaces('dist',this)">Km <span>&#8597;</span></th>
-            <th onclick="sortRaces('timeSec',this)">Tempo <span>&#8597;</span></th>
-            <th onclick="sortRaces('paceSec',this)">Ritmo <span>&#8597;</span></th>
-            
+            <th onclick="sortRaces('name',this)">Gara <span class="sort-arrow">&#8597;</span></th>
+            <th onclick="sortRaces('dist',this)">Km <span class="sort-arrow">&#8597;</span></th>
+            <th onclick="sortRaces('timeSec',this)">Tempo <span class="sort-arrow">&#8597;</span></th>
+            <th onclick="sortRaces('paceSec',this)">Ritmo <span class="sort-arrow">&#8597;</span></th>
           </tr>
         </thead>
         <tbody id="racesBody"></tbody>
@@ -729,7 +728,7 @@ var races = [
   { name:'Salomon Run',    place:'Barcellona', date:'11.04.2026', dateSort:'20260411', lat:41.3851, lng:2.1734,  dist:9.35,  time:'44:35', timeSec:2675, pace:"4′46″/km", paceSec:286, bib:'28',   dnf:false },
   { name:'Stay Sano Run',  place:'Milano',     date:'10.05.2026', dateSort:'20260510', lat:45.4654, lng:9.1859,  dist:12.63, time:'52:12', timeSec:3132, pace:"4′08″/km", paceSec:248, bib:'1096', dnf:false }
 ];
-var rSortField = 'date', rSortDir = 1;
+var rSortField = 'dateSort', rSortDir = 1;
 
 function renderRaces() {
   var sorted = races.slice().sort(function(a,b){
