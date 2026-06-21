@@ -149,6 +149,15 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   /* RUNNING */
   .races-grid{grid-template-columns:1fr;gap:1.5rem}
   #race-map{height:260px}
+  .races-grid .data-table{table-layout:fixed;width:100%}
+  .races-grid .data-table th, .races-grid .data-table td{padding:8px 4px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .races-grid .data-table th:nth-child(1){width:14%}
+  .races-grid .data-table th:nth-child(2){width:20%}
+  .races-grid .data-table th:nth-child(3){width:24%}
+  .races-grid .data-table th:nth-child(4){width:12%}
+  .races-grid .data-table th:nth-child(5){width:15%}
+  .races-grid .data-table th:nth-child(6){width:15%}
+  .race-dist{font-size:14px !important}
 
   /* GENERAL */
   .section-label{font-size:10px}
@@ -836,7 +845,7 @@ function renderRaces() {
       '<td style="color:var(--ink-muted);font-size:13px">' + r.date + '</td>' +
       '<td>' + r.place + '</td>' +
       '<td style="font-weight:400;color:var(--ink)">' + r.name + (r.dnf ? ' <span style="color:#C1440E;font-size:11px">*</span>' : '') + '</td>' +
-      '<td style="font-weight:400;color:var(--ink)">' + r.dist.toFixed(2) + ' km</td>' +
+      '<td style="font-weight:400;color:var(--ink)">' + r.dist.toFixed(1) + '</td>' +
       '<td style="font-weight:400;color:var(--ink)">' + r.time + '</td>' +
       '<td>' + r.pace + '</td>' +
       '</tr>';
