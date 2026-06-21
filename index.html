@@ -23,6 +23,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(247,245,240,
 .pages-wrapper{position:fixed;top:64px;left:0;right:0;bottom:0;overflow:hidden}
 .page{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;padding:70px 5vw 60px;opacity:0;pointer-events:none;transform:translateY(16px);transition:opacity 0.35s ease,transform 0.35s ease}
 .page.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.page.no-scroll{overflow-y:hidden;display:flex;flex-direction:column;justify-content:center}
 .section-label{font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
 h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.15;font-size:clamp(36px,5vw,60px)}
 .filter-btn{padding:7px 18px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;font-weight:400;background:transparent;border:1px solid var(--border);color:var(--ink-muted);border-radius:2px;cursor:pointer;transition:all 0.2s;font-family:"DM Sans",sans-serif}
@@ -34,8 +35,8 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 .hero-role::before{content:"|";color:var(--border);margin-right:1.5rem;font-weight:200;font-size:18px}
 .hero-role:first-child::before{display:none}.hero-role[onclick]:hover{color:var(--accent)}
 .hero-mantra{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(18px,2.5vw,26px);font-style:italic;font-weight:300;color:var(--ink-faint)}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:2rem}
-.about-text p{font-size:18px;font-weight:300;color:var(--ink-muted);line-height:1.8;margin-bottom:2.5rem}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;margin-top:1.5rem}
+.about-text p{font-size:17px;font-weight:300;color:var(--ink-muted);line-height:1.65;margin-bottom:1.6rem}
 .about-text p strong{color:var(--ink);font-weight:400}
 .stat-item{padding-bottom:2rem;border-bottom:1px solid var(--border)}
 .stat-item:last-child{border-bottom:none}
@@ -67,7 +68,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 .slot-book{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);font-weight:400;display:inline-flex;align-items:center;gap:8px;background:none;border:none;font-family:"DM Sans",sans-serif;cursor:pointer;padding:0}
 .slot-book::after{content:"rarr;";transition:transform 0.2s}
 .slot-card:hover .slot-book::after{transform:translateX(4px)}
-.portfolio-disclaimer{display:inline-flex;align-items:center;gap:8px;background:var(--accent-light);color:var(--accent);font-size:12px;padding:8px 16px;border-radius:2px;margin:1.5rem 0 2rem;font-weight:400}
+.portfolio-disclaimer{display:inline-flex;align-items:center;gap:8px;background:var(--accent-light);color:var(--accent);font-size:12px;padding:8px 16px;border-radius:2px;margin-top:1.5rem;font-weight:400}
 .perf-grid{display:grid;grid-template-columns:repeat(1,1fr);max-width:240px !important;gap:1px;background:var(--border);border:1px solid var(--border);max-width:700px;margin-bottom:2.5rem}
 .perf-card{background:var(--cream);padding:1.5rem;text-align:center}
 .perf-value{font-family:"Cormorant Garamond",Georgia,serif;font-size:40px;font-weight:300;line-height:1;margin-bottom:4px}
@@ -76,7 +77,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 .data-table{width:100%;border-collapse:collapse}
 .data-table th{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;font-weight:400;color:var(--ink-muted);text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
 .data-table th:hover{color:var(--ink)}
-.data-table th.sorted{color:var(--accent)}
+.data-table th.sorted{color:var(--accent);font-weight:600}
 .data-table td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:14px;font-weight:300;color:var(--ink-muted)}
 .data-table tr:hover td{background:rgba(44,74,62,0.02)}
 .data-table tfoot td{font-weight:500;font-size:14px;color:var(--ink);border-top:2px solid var(--border);padding:13px 14px}
@@ -123,12 +124,12 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   </div>
 </div>
 
-<div class="page" id="page-about">
+<div class="page no-scroll" id="page-about">
   <h2>Una vita a pieno ritmo.</h2>
   <div class="about-grid">
     <div class="about-text">
       <p>Sono nato nel <strong>1996</strong> a Varese, dove sono cresciuto e ho coltivato due grandi passioni: la <strong>finanza</strong> e lo <strong>sport</strong>. Due mondi apparentemente lontani, ma uniti da un principio fondamentale &#8212; la pazienza.</p>
-      <p>Lavoro nel campo dell&#8217;economia circolare, dopo una carriera costruita tra alcuni dei brand del lusso italiano pi&#249; iconici al mondo.</p>
+      <p>Lavoro nel settore dell&#8217;economia circolare, dopo una carriera costruita tra alcuni dei brand del lusso italiano pi&#249; iconici al mondo.</p>
       <p>Ho scritto un libro sulla <strong>finanza personale</strong> per aiutare chi, come me, si &egrave; trovato a navigare questo mondo senza una bussola.</p>
       <p>E poi corro &#8212; perch&eacute; lo sport mi disciplina: ogni gara &egrave; un promemoria che i risultati si costruiscono un passo alla volta.</p>
     </div>
@@ -148,7 +149,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
       <div>
         <a href="https://www.eso.it" target="_blank" class="career-company-link"><div class="career-company">ESO Societ&#224; Benefit</div></a>
         <div class="career-role">General Manager</div>
-        <p class="career-desc">Guida strategica e operativa di una realt&#224; innovativa nel campo dell&#8217;economia circolare. Leadership, sviluppo del business e sostenibilit&#224;.</p>
+        <p class="career-desc">Guida strategica e operativa di una realt&#224; innovativa nel settore dell&#8217;economia circolare. Leadership, sviluppo del business e sostenibilit&#224;.</p>
         <span class="career-tag">Economia Circolare &middot; Managing</span>
       </div>
     </div>
@@ -167,7 +168,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
         <a href="https://www.stoneisland.com" target="_blank" class="career-company-link"><div class="career-company">Stone Island</div></a>
         <div class="career-role">Business Controller</div>
         <p class="career-desc">Analisi e controllo di gestione in un brand iconico del fashion italiano, con focus su performance e reportistica.</p>
-        <span class="career-tag">Fashion &middot; Controlling</span>
+        <span class="career-tag">Fashion &middot; Controller</span>
       </div>
     </div>
     <div class="career-item">
@@ -182,7 +183,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   </div>
 </div>
 
-<div class="page" id="page-book">
+<div class="page no-scroll" id="page-book">
   <h2>Soltanto gli alberi crescono da soli.</h2>
   <div class="book-wrapper">
     <div class="book-grid">
@@ -209,7 +210,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   </div>
 </div>
 
-<div class="page" id="page-consultant">
+<div class="page no-scroll" id="page-consultant">
   <h2>Parliamo di<br><em id="rolling-text">finanza personale.</em></h2>
   <p style="font-size:18px;font-weight:300;color:var(--ink-muted);line-height:1.8;max-width:600px;margin:1.5rem 0 2.5rem">Una sessione one-to-one per fare chiarezza sui tuoi obiettivi e costruire un piano d&#8217;azione.</p>
   <div class="slots-grid">
@@ -326,7 +327,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 </div>
 
 <div class="page" id="page-running">
-  <h2>Ogni gara, ogni passo.</h2>
+  <h2>Le mie gare</h2>
   <div class="races-grid">
     <div>
       <table class="data-table">
@@ -749,8 +750,14 @@ function renderRaces() {
 }
 function sortRaces(field, th) {
   if (rSortField === field) rSortDir *= -1; else { rSortField = field; rSortDir = 1; }
-  document.querySelectorAll('.data-table th').forEach(function(t){ t.classList.remove('sorted'); });
+  document.querySelectorAll('.races-grid .data-table th').forEach(function(t){
+    t.classList.remove('sorted');
+    var arrow = t.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = '\u2195';
+  });
   th.classList.add('sorted');
+  var activeArrow = th.querySelector('.sort-arrow');
+  if (activeArrow) activeArrow.textContent = rSortDir === 1 ? '\u2191' : '\u2193';
   renderRaces();
 }
 renderRaces();
