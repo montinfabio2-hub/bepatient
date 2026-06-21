@@ -374,8 +374,8 @@ function renderHistoryChart(history, containerId, color) {
 
   var data = history;
   var N = data.length;
-  var W = 900, H = 150;
-  var pl = 44, pr = 16, pt = 8, pb = 24;
+  var W = 900, H = 170;
+  var pl = 44, pr = 16, pt = 22, pb = 24;
   var gW = W - pl - pr, gH = H - pt - pb;
 
   var allPcts = data.map(function(m){ return m.pct; });
@@ -386,7 +386,7 @@ function renderHistoryChart(history, containerId, color) {
   function xp(i){ return pl + (i/(N-1))*gW; }
   function yp(v){ return pt + gH*(1 - (v-minV)/(maxV-minV)); }
 
-  var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">';
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;overflow:visible">';
 
   var tickStart = Math.floor(minV/step)*step;
   var tickEnd = Math.ceil(maxV/step)*step;
@@ -422,8 +422,74 @@ function renderHistoryChart(history, containerId, color) {
   var lastSign = data[N-1].pct >= 0 ? '+' : '';
   svg += '<text x="'+(lx-8).toFixed(1)+'" y="'+(ly-8).toFixed(1)+'" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="'+color+'">'+lastSign+data[N-1].pct+'%</text>';
 
+  // Invisible hover zones + crosshair dot (added via JS after innerHTML set)
+  svg += '<g id="'+containerId+'-hover"></g>';
   svg += '</svg>';
   container.innerHTML = svg;
+
+  // Add interactive hover layer
+  var svgEl = container.querySelector('svg');
+  var hoverGroup = container.querySelector('#'+containerId+'-hover');
+
+  var tooltip = document.createElement('div');
+  tooltip.style.cssText = 'position:absolute;background:var(--ink);color:var(--cream);padding:6px 10px;border-radius:2px;font-size:12px;font-family:DM Sans,sans-serif;pointer-events:none;opacity:0;transition:opacity 0.12s;z-index:20;white-space:nowrap';
+  container.style.position = 'relative';
+  container.appendChild(tooltip);
+
+  var ns = 'http://www.w3.org/2000/svg';
+  var crosshairLine = document.createElementNS(ns, 'line');
+  crosshairLine.setAttribute('y1', pt); crosshairLine.setAttribute('y2', pt+gH);
+  crosshairLine.setAttribute('stroke', 'rgba(26,26,24,0.25)');
+  crosshairLine.setAttribute('stroke-width', '1');
+  crosshairLine.setAttribute('stroke-dasharray', '3,2');
+  crosshairLine.style.display = 'none';
+  hoverGroup.appendChild(crosshairLine);
+
+  var crosshairDot = document.createElementNS(ns, 'circle');
+  crosshairDot.setAttribute('r', '4');
+  crosshairDot.setAttribute('fill', color);
+  crosshairDot.setAttribute('stroke', '#F7F5F0');
+  crosshairDot.setAttribute('stroke-width', '1.5');
+  crosshairDot.style.display = 'none';
+  hoverGroup.appendChild(crosshairDot);
+
+  var itM = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+  function fmtFull(m) {
+    var p = m.split('-');
+    return itM[parseInt(p[1])-1] + ' ' + p[0];
+  }
+
+  svgEl.addEventListener('mousemove', function(e) {
+    var rect = svgEl.getBoundingClientRect();
+    var scaleX = W / rect.width;
+    var mouseX = (e.clientX - rect.left) * scaleX;
+
+    // Find closest data point
+    var idx = Math.round((mouseX - pl) / gW * (N-1));
+    idx = Math.max(0, Math.min(N-1, idx));
+
+    var px = xp(idx), py = yp(data[idx].pct);
+    crosshairLine.setAttribute('x1', px); crosshairLine.setAttribute('x2', px);
+    crosshairLine.style.display = 'block';
+    crosshairDot.setAttribute('cx', px); crosshairDot.setAttribute('cy', py);
+    crosshairDot.style.display = 'block';
+
+    var sign = data[idx].pct >= 0 ? '+' : '';
+    tooltip.innerHTML = '<strong>'+fmtFull(data[idx].m)+'</strong> &nbsp; '+sign+data[idx].pct+'%';
+    tooltip.style.opacity = '1';
+
+    var scaleXReal = rect.width / W;
+    var tipX = px * scaleXReal;
+    var tipY = py * (rect.height / H);
+    tooltip.style.left = Math.min(tipX + 10, rect.width - 120) + 'px';
+    tooltip.style.top  = Math.max(tipY - 36, 0) + 'px';
+  });
+
+  svgEl.addEventListener('mouseleave', function() {
+    crosshairLine.style.display = 'none';
+    crosshairDot.style.display = 'none';
+    tooltip.style.opacity = '0';
+  });
 }
 
 function applyLiveData() {
