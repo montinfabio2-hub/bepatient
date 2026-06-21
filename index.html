@@ -83,6 +83,8 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 .data-table tfoot td{font-weight:500;font-size:14px;color:var(--ink);border-top:2px solid var(--border);padding:13px 14px}
 .perf-pos{color:#2C6E49;font-weight:500}.perf-neg{color:#C1440E;font-weight:500}
 .races-grid{display:grid;grid-template-columns:1fr 360px;gap:2.5rem;margin-top:2rem;align-items:start}
+.table-scroll-wrap{overflow-x:visible}
+.mobile-scroll-hint{display:none}
 #race-map{height:380px;border:1px solid var(--border);border-radius:4px;overflow:hidden;position:relative;background:var(--cream)}
 #rolling-text{display:inline-block;transition:opacity 0.4s ease,transform 0.4s ease}
 #rolling-text.out{opacity:0;transform:translateY(-8px)}
@@ -149,15 +151,10 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   /* RUNNING */
   .races-grid{grid-template-columns:1fr;gap:1.5rem}
   #race-map{height:260px}
-  .races-grid .data-table{table-layout:fixed;width:100%}
-  .races-grid .data-table th, .races-grid .data-table td{padding:8px 4px;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .races-grid .data-table th:nth-child(1){width:14%}
-  .races-grid .data-table th:nth-child(2){width:20%}
-  .races-grid .data-table th:nth-child(3){width:24%}
-  .races-grid .data-table th:nth-child(4){width:12%}
-  .races-grid .data-table th:nth-child(5){width:15%}
-  .races-grid .data-table th:nth-child(6){width:15%}
-  .race-dist{font-size:14px !important}
+  .table-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -6vw;padding:0 6vw}
+  .mobile-scroll-hint{display:inline}
+  .races-grid .data-table{min-width:620px}
+  .races-grid .data-table th, .races-grid .data-table td{padding:9px 10px;font-size:12px;white-space:nowrap}
 
   /* GENERAL */
   .section-label{font-size:10px}
@@ -424,20 +421,22 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   <h2>Le mie gare</h2>
   <div class="races-grid">
     <div>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th onclick="sortRaces('dateSort',this)">Data <span class="sort-arrow">&#8597;</span></th>
-            <th>Luogo</th>
-            <th onclick="sortRaces('name',this)">Gara <span class="sort-arrow">&#8597;</span></th>
-            <th onclick="sortRaces('dist',this)">Km <span class="sort-arrow">&#8597;</span></th>
-            <th onclick="sortRaces('timeSec',this)">Tempo <span class="sort-arrow">&#8597;</span></th>
-            <th onclick="sortRaces('paceSec',this)">Ritmo <span class="sort-arrow">&#8597;</span></th>
-          </tr>
-        </thead>
-        <tbody id="racesBody"></tbody>
-      </table>
-      <p style="font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:1rem">Clicca le intestazioni per ordinare &nbsp;&middot;&nbsp; * = ritirato</p>
+      <div class="table-scroll-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th onclick="sortRaces('dateSort',this)">Data <span class="sort-arrow">&#8597;</span></th>
+              <th>Luogo</th>
+              <th onclick="sortRaces('name',this)">Gara <span class="sort-arrow">&#8597;</span></th>
+              <th onclick="sortRaces('dist',this)">Km <span class="sort-arrow">&#8597;</span></th>
+              <th onclick="sortRaces('timeSec',this)">Tempo <span class="sort-arrow">&#8597;</span></th>
+              <th onclick="sortRaces('paceSec',this)">Ritmo <span class="sort-arrow">&#8597;</span></th>
+            </tr>
+          </thead>
+          <tbody id="racesBody"></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:1rem">Clicca le intestazioni per ordinare &nbsp;&middot;&nbsp; * = ritirato &nbsp;&middot;&nbsp; <span class="mobile-scroll-hint">scorri lateralmente per vedere tutto &#8594;</span></p>
     </div>
     <div id="race-map" style="height:380px;border-radius:4px;overflow:hidden;border:1px solid var(--border)"></div>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -845,7 +844,7 @@ function renderRaces() {
       '<td style="color:var(--ink-muted);font-size:13px">' + r.date + '</td>' +
       '<td>' + r.place + '</td>' +
       '<td style="font-weight:400;color:var(--ink)">' + r.name + (r.dnf ? ' <span style="color:#C1440E;font-size:11px">*</span>' : '') + '</td>' +
-      '<td style="font-weight:400;color:var(--ink)">' + r.dist.toFixed(1) + '</td>' +
+      '<td style="font-weight:400;color:var(--ink)">' + r.dist.toFixed(2) + ' km</td>' +
       '<td style="font-weight:400;color:var(--ink)">' + r.time + '</td>' +
       '<td>' + r.pace + '</td>' +
       '</tr>';
