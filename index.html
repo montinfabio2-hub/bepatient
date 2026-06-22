@@ -111,8 +111,8 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   .page.no-scroll{overflow-y:auto !important;display:block !important;justify-content:flex-start}
 
   /* HOME - keep roles on one line */
-  #page-home{padding-bottom:90px}
-  .hero-name{font-size:clamp(44px,13vw,64px)}
+  #page-home{padding-bottom:70px;justify-content:flex-end}
+  .hero-name{font-size:clamp(40px,11vw,64px);margin-top:0.5rem}
   .hero-roles{gap:0;flex-wrap:nowrap;margin-bottom:1.2rem;overflow-x:visible}
   .hero-role{font-size:10px;padding:0 0.55rem;white-space:nowrap;letter-spacing:0.06em}
   .hero-role::before{margin-right:0.55rem;font-size:14px}
@@ -151,7 +151,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   /* RUNNING */
   .races-grid{grid-template-columns:1fr;gap:1.5rem}
   #race-map{height:260px}
-  .table-scroll-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  .table-scroll-wrap{overflow-x:auto !important;overflow-y:hidden;-webkit-overflow-scrolling:touch;max-width:100%;width:100%;display:block;position:relative}
   .mobile-scroll-hint{display:inline}
   .races-grid .data-table{min-width:620px}
   .races-grid .data-table th, .races-grid .data-table td{padding:9px 10px;font-size:12px;white-space:nowrap}
