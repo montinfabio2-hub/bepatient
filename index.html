@@ -111,7 +111,7 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
   .page.no-scroll{overflow-y:auto !important;display:block !important;justify-content:flex-start}
 
   /* HOME - keep roles on one line */
-  #page-home{padding-bottom:70px;align-items:flex-start;justify-content:flex-end;text-align:left}
+  #page-home{padding-bottom:70px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end}
   .hero-name{font-size:clamp(40px,11vw,64px);margin-top:0.5rem;text-align:left}
   .hero-content{text-align:left;width:100%}
   .hero-roles{gap:0;flex-wrap:nowrap;margin-bottom:1.2rem;overflow-x:visible}
@@ -468,8 +468,9 @@ function renderHistoryChart(history, containerId, color) {
 
   var data = history;
   var N = data.length;
-  var W = 900, H = 170;
-  var pl = 44, pr = 16, pt = 22, pb = 24;
+  var isMobile = window.innerWidth <= 768;
+  var W = 900, H = isMobile ? 240 : 170;
+  var pl = isMobile ? 38 : 44, pr = 16, pt = isMobile ? 26 : 22, pb = isMobile ? 30 : 24;
   var gW = W - pl - pr, gH = H - pt - pb;
 
   var allPcts = data.map(function(m){ return m.pct; });
@@ -480,7 +481,10 @@ function renderHistoryChart(history, containerId, color) {
   function xp(i){ return pl + (i/(N-1))*gW; }
   function yp(v){ return pt + gH*(1 - (v-minV)/(maxV-minV)); }
 
-  var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;overflow:visible">';
+  var fontSizeAxis = isMobile ? 12 : 9;
+  var fontSizeLabel = isMobile ? 14 : 11;
+
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;overflow:visible;touch-action:none">';
 
   var tickStart = Math.floor(minV/step)*step;
   var tickEnd = Math.ceil(maxV/step)*step;
@@ -489,18 +493,19 @@ function renderHistoryChart(history, containerId, color) {
     if (y >= pt-2 && y <= pt+gH+2) {
       svg += '<line x1="'+pl+'" y1="'+y.toFixed(1)+'" x2="'+(pl+gW)+'" y2="'+y.toFixed(1)+'" stroke="rgba(26,26,24,0.06)" stroke-width="1"/>';
       var sign = v > 0 ? '+' : '';
-      svg += '<text x="'+(pl-4)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">'+sign+v+'%</text>';
+      svg += '<text x="'+(pl-4)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end" font-family="DM Sans,sans-serif" font-size="'+fontSizeAxis+'" fill="#AEADA8">'+sign+v+'%</text>';
     }
   }
 
   var y0 = yp(0);
   svg += '<line x1="'+pl+'" y1="'+y0.toFixed(1)+'" x2="'+(pl+gW)+'" y2="'+y0.toFixed(1)+'" stroke="rgba(26,26,24,0.2)" stroke-width="1" stroke-dasharray="4,3"/>';
 
+  var labelEvery = isMobile ? 9 : 6;
   for (var i = 0; i < N; i++) {
-    if (i % 6 === 0) {
+    if (i % labelEvery === 0) {
       var parts = data[i].m.split('-');
       var label = parts[1] + '.' + parts[0].slice(2);
-      svg += '<text x="'+xp(i).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#AEADA8">'+label+'</text>';
+      svg += '<text x="'+xp(i).toFixed(1)+'" y="'+(H-6)+'" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="'+fontSizeAxis+'" fill="#AEADA8">'+label+'</text>';
     }
   }
 
@@ -509,24 +514,22 @@ function renderHistoryChart(history, containerId, color) {
   svg += '<polygon points="'+areaPts+'" fill="rgba(44,74,62,0.10)"/>';
 
   var linePts = data.map(function(m,i){ return xp(i).toFixed(1)+','+yp(m.pct).toFixed(1); }).join(' ');
-  svg += '<polyline points="'+linePts+'" fill="none" stroke="'+color+'" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>';
+  svg += '<polyline points="'+linePts+'" fill="none" stroke="'+color+'" stroke-width="'+(isMobile?2.2:1.8)+'" stroke-linejoin="round" stroke-linecap="round"/>';
 
   var lx = xp(N-1), ly = yp(data[N-1].pct);
-  svg += '<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="3.5" fill="'+color+'" stroke="#F7F5F0" stroke-width="1.5"/>';
+  svg += '<circle cx="'+lx.toFixed(1)+'" cy="'+ly.toFixed(1)+'" r="'+(isMobile?4.5:3.5)+'" fill="'+color+'" stroke="#F7F5F0" stroke-width="1.5"/>';
   var lastSign = data[N-1].pct >= 0 ? '+' : '';
-  svg += '<text x="'+(lx-8).toFixed(1)+'" y="'+(ly-8).toFixed(1)+'" text-anchor="end" font-family="DM Sans,sans-serif" font-size="11" font-weight="500" fill="'+color+'">'+lastSign+data[N-1].pct+'%</text>';
+  svg += '<text x="'+(lx-8).toFixed(1)+'" y="'+(ly-10).toFixed(1)+'" text-anchor="end" font-family="DM Sans,sans-serif" font-size="'+fontSizeLabel+'" font-weight="500" fill="'+color+'">'+lastSign+data[N-1].pct+'%</text>';
 
-  // Invisible hover zones + crosshair dot (added via JS after innerHTML set)
   svg += '<g id="'+containerId+'-hover"></g>';
   svg += '</svg>';
   container.innerHTML = svg;
 
-  // Add interactive hover layer
   var svgEl = container.querySelector('svg');
   var hoverGroup = container.querySelector('#'+containerId+'-hover');
 
   var tooltip = document.createElement('div');
-  tooltip.style.cssText = 'position:absolute;background:var(--ink);color:var(--cream);padding:6px 10px;border-radius:2px;font-size:12px;font-family:DM Sans,sans-serif;pointer-events:none;opacity:0;transition:opacity 0.12s;z-index:20;white-space:nowrap';
+  tooltip.style.cssText = 'position:absolute;background:var(--ink);color:var(--cream);padding:6px 10px;border-radius:2px;font-size:'+(isMobile?13:12)+'px;font-family:DM Sans,sans-serif;pointer-events:none;opacity:0;transition:opacity 0.12s;z-index:20;white-space:nowrap';
   container.style.position = 'relative';
   container.appendChild(tooltip);
 
@@ -540,7 +543,7 @@ function renderHistoryChart(history, containerId, color) {
   hoverGroup.appendChild(crosshairLine);
 
   var crosshairDot = document.createElementNS(ns, 'circle');
-  crosshairDot.setAttribute('r', '4');
+  crosshairDot.setAttribute('r', isMobile ? '6' : '4');
   crosshairDot.setAttribute('fill', color);
   crosshairDot.setAttribute('stroke', '#F7F5F0');
   crosshairDot.setAttribute('stroke-width', '1.5');
@@ -553,12 +556,10 @@ function renderHistoryChart(history, containerId, color) {
     return itM[parseInt(p[1])-1] + ' ' + p[0];
   }
 
-  svgEl.addEventListener('mousemove', function(e) {
+  function showAtClientX(clientX) {
     var rect = svgEl.getBoundingClientRect();
     var scaleX = W / rect.width;
-    var mouseX = (e.clientX - rect.left) * scaleX;
-
-    // Find closest data point
+    var mouseX = (clientX - rect.left) * scaleX;
     var idx = Math.round((mouseX - pl) / gW * (N-1));
     idx = Math.max(0, Math.min(N-1, idx));
 
@@ -575,144 +576,31 @@ function renderHistoryChart(history, containerId, color) {
     var scaleXReal = rect.width / W;
     var tipX = px * scaleXReal;
     var tipY = py * (rect.height / H);
-    tooltip.style.left = Math.min(tipX + 10, rect.width - 120) + 'px';
-    tooltip.style.top  = Math.max(tipY - 36, 0) + 'px';
-  });
+    var tipWidthEstimate = 130;
+    tooltip.style.left = Math.max(0, Math.min(tipX - tipWidthEstimate/2, rect.width - tipWidthEstimate)) + 'px';
+    tooltip.style.top  = Math.max(tipY - 40, 0) + 'px';
+  }
 
-  svgEl.addEventListener('mouseleave', function() {
+  function hideTooltip() {
     crosshairLine.style.display = 'none';
     crosshairDot.style.display = 'none';
     tooltip.style.opacity = '0';
+  }
+
+  // Mouse events (desktop)
+  svgEl.addEventListener('mousemove', function(e) { showAtClientX(e.clientX); });
+  svgEl.addEventListener('mouseleave', hideTooltip);
+
+  // Touch events (mobile)
+  svgEl.addEventListener('touchstart', function(e) {
+    if (e.touches.length) showAtClientX(e.touches[0].clientX);
+  }, {passive: true});
+  svgEl.addEventListener('touchmove', function(e) {
+    if (e.touches.length) showAtClientX(e.touches[0].clientX);
+  }, {passive: true});
+  svgEl.addEventListener('touchend', function() {
+    setTimeout(hideTooltip, 1500);
   });
-}
-
-function applyLiveData() {
-  if (!liveData) return;
-
-  // Update km total
-  var kmEl = document.getElementById('km-total');
-  if (kmEl && liveData.km_total) {
-    kmEl.textContent = liveData.km_total.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1});
-  }
-
-  // Update portfolio prices
-  if (liveData.portfolio && liveData.portfolio.prices) {
-    var prices = liveData.portfolio.prices;
-    [portfolios.personal.holdings, portfolios.family.holdings].forEach(function(arr){
-      arr.forEach(function(h){
-        if (prices[h.ticker] !== undefined) h.currentPrice = prices[h.ticker];
-      });
-    });
-  }
-
-  // Update big performance numbers
-  if (liveData.portfolio) {
-    if (liveData.portfolio.personal && document.getElementById('perf-big-personal')) {
-      var pp = liveData.portfolio.personal.performance_pct;
-      var sign = pp >= 0 ? '+' : '';
-      document.getElementById('perf-big-personal').textContent = sign + pp.toFixed(2) + '%';
-      document.getElementById('perf-big-personal').style.color = pp >= 0 ? '#2C6E49' : '#C1440E';
-    }
-    if (liveData.portfolio.family && document.getElementById('perf-big-family')) {
-      var pf = liveData.portfolio.family.performance_pct;
-      var signF = pf >= 0 ? '+' : '';
-      document.getElementById('perf-big-family').textContent = signF + pf.toFixed(2) + '%';
-      document.getElementById('perf-big-family').style.color = pf >= 0 ? '#2C6E49' : '#C1440E';
-    }
-  }
-
-  renderPortfolio();
-}
-
-// MOBILE MENU
-function toggleMobileMenu() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-  document.querySelector('.nav-burger').classList.toggle('open');
-}
-function closeMobileMenu() {
-  document.getElementById('mobile-menu').classList.remove('open');
-  document.querySelector('.nav-burger').classList.remove('open');
-}
-
-// PAGE NAVIGATION
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
-  var page = document.getElementById('page-' + id);
-  if (page) page.classList.add('active');
-  var nav = document.getElementById('nav-' + id);
-  if (nav) nav.classList.add('active');
-  if (id === 'running') setTimeout(initMap, 150);
-  if (id === 'portfolio') setTimeout(drawCharts, 50);
-}
-
-// ROLLING TEXT
-var rollingWords = ['finanza personale.', 'carriera lavorativa.', 'corsa.', 'strategie aziendali.'];
-var rollingIdx = 0;
-function rotateText() {
-  var el = document.getElementById('rolling-text');
-  if (!el) return;
-  el.classList.add('out');
-  setTimeout(function() {
-    rollingIdx = (rollingIdx + 1) % rollingWords.length;
-    el.textContent = rollingWords[rollingIdx];
-    el.classList.remove('out');
-  }, 400);
-}
-setInterval(rotateText, 2200);
-
-// PORTFOLIO
-// ============================================================
-// AGGIORNA QUI — una volta al mese
-// ============================================================
-var portfolios = {
-  personal: {
-    holdings: [
-      { name:'Amundi Core Nasdaq-100 Swap UCITS ETF Acc', isin:'LU1829221024', ticker:'UST',  exchange:'EPA', qty:108, avgPrice:74.16,  currentPrice:107.453,  lastBuy:'—', link:'https://www.amundietf.it/it/privati/products/equity/amundi-core-nasdaq100-swap-ucits-etf-acc/lu1829221024', yahooSymbol:'UST.PA'  },
-      { name:'iShares Core MSCI World UCITS ETF USD (Acc)',isin:'IE00B4L5Y983',ticker:'EUNL', exchange:'TDG', qty:229, avgPrice:102.54, currentPrice:124.525, lastBuy:'09.06.2026', lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund',     yahooSymbol:'EUNL.DE' },
-      { name:'Vanguard FTSE All-World UCITS ETF (USD) Acc',isin:'IE00BK5BQT80',ticker:'VWCE', exchange:'TDG', qty:62,  avgPrice:143.50, currentPrice:164.88, lastBuy:'—', link:'https://www.it.vanguard/investitori-privati/prodotti/etf/azionario/9679/ftse-all-world-ucits-etf-usd-accumulating', yahooSymbol:'VWCE.DE' },
-      { name:'iShares Edge MSCI World Momentum Factor UCITS ETF USD (Acc)', isin:'IE00BP3QZ825', ticker:'IS3R', exchange:'XET', qty:228, avgPrice:54.74, currentPrice:105.98, lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/270051/ishares-msci-world-momentum-factor-ucits-etf?switchLocale=y&siteEntryPassthrough=true', yahooSymbol:'IS3R.DE' },
-    ],
-    PERF_YTD:0.0, PERF_1Y:0.0, PERF_INCEPTION:0.0
-  },
-  family: {
-    holdings: [
-      { name:'iShares Core MSCI World UCITS ETF USD (Acc)', isin:'IE00B4L5Y983', ticker:'EUNL', exchange:'TDG', qty:413, avgPrice:121.00, currentPrice:124.525, lastBuy:'—', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund', yahooSymbol:'EUNL.DE' },
-    ],
-    PERF_YTD:0.0, PERF_1Y:0.0, PERF_INCEPTION:0.0
-  }
-};
-// ============================================================
-
-var activePortfolio = 'personal';
-
-function switchPortfolio(key) {
-  activePortfolio = key;
-  var isP = key === 'personal';
-  document.getElementById('chart-personal').style.display    = isP ? 'block' : 'none';
-  document.getElementById('chart-family').style.display      = isP ? 'none'  : 'block';
-  document.getElementById('perf-big-personal').style.display = isP ? 'block' : 'none';
-  document.getElementById('perf-big-family').style.display   = isP ? 'none'  : 'block';
-  var tabP = document.getElementById('tab-personal');
-  var tabF = document.getElementById('tab-family');
-  tabP.style.background = isP ? 'var(--ink)' : 'transparent';
-  tabP.style.color      = isP ? 'var(--cream)' : 'var(--ink-muted)';
-  tabP.style.border     = isP ? 'none' : '1px solid var(--border)';
-  tabF.style.background = isP ? 'transparent' : 'var(--ink)';
-  tabF.style.color      = isP ? 'var(--ink-muted)' : 'var(--cream)';
-  tabF.style.border     = isP ? '1px solid var(--border)' : 'none';
-  renderPortfolio();
-  drawCharts();
-}
-
-function drawCharts() {
-  if (!liveData || !liveData.portfolio) return;
-  if (liveData.portfolio.personal && liveData.portfolio.personal.history) {
-    renderHistoryChart(liveData.portfolio.personal.history, 'chart-personal', '#2C4A3E');
-  }
-  if (liveData.portfolio.family && liveData.portfolio.family.history) {
-    renderHistoryChart(liveData.portfolio.family.history, 'chart-family', '#5C8A7A');
-  }
 }
 
 function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
@@ -744,11 +632,7 @@ function renderPortfolio() {
       '</tr>';
   }).join('');
 
-  document.getElementById('holdings-foot').innerHTML =
-    '<td style="font-weight:500;color:var(--ink)">Totale</td>' +
-    '<td style="text-align:right"><span class="' + perfClass(totalPerf) + '" style="font-size:15px">' + fmtPct(totalPerf) + '</span></td>' +
-    '<td style="text-align:right">100%</td>';
-
+  document.getElementById('holdings-foot').innerHTML = '';
   document.getElementById('porto-update').textContent = 'Ultimo aggiornamento: da definire';
   renderPieChart(h, totalValue);
 }
