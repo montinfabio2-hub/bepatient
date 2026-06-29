@@ -447,21 +447,180 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 </div>
 
 <script>
-
 // ── LIVE DATA from data.json (updated by GitHub Actions) ──
 var liveData = null;
+
 async function loadLiveData() {
   try {
     var res = await fetch('data.json?t=' + Date.now(), {cache: 'no-store'});
     liveData = await res.json();
-    console.log('liveData loaded:', liveData);
     applyLiveData();
   } catch(e) {
     console.log('data.json fetch error:', e);
   }
 }
 
+function applyLiveData() {
+  if (!liveData) return;
 
+  var kmEl = document.getElementById('km-total');
+  if (kmEl && liveData.km_total) {
+    kmEl.textContent = liveData.km_total.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1});
+  }
+
+  if (liveData.portfolio && liveData.portfolio.prices) {
+    var prices = liveData.portfolio.prices;
+    [portfolios.personal.holdings, portfolios.family.holdings].forEach(function(arr){
+      arr.forEach(function(h){
+        if (prices[h.ticker] !== undefined) h.currentPrice = prices[h.ticker];
+      });
+    });
+  }
+
+  if (liveData.portfolio) {
+    if (liveData.portfolio.personal && document.getElementById('perf-big-personal')) {
+      var pp = liveData.portfolio.personal.performance_pct;
+      var sign = pp >= 0 ? '+' : '';
+      document.getElementById('perf-big-personal').textContent = sign + pp.toFixed(2) + '%';
+      document.getElementById('perf-big-personal').style.color = pp >= 0 ? '#2C6E49' : '#C1440E';
+    }
+    if (liveData.portfolio.family && document.getElementById('perf-big-family')) {
+      var pf = liveData.portfolio.family.performance_pct;
+      var signF = pf >= 0 ? '+' : '';
+      document.getElementById('perf-big-family').textContent = signF + pf.toFixed(2) + '%';
+      document.getElementById('perf-big-family').style.color = pf >= 0 ? '#2C6E49' : '#C1440E';
+    }
+  }
+
+  renderPortfolio();
+  drawCharts();
+}
+
+function drawCharts() {
+  if (!liveData || !liveData.portfolio) return;
+  if (liveData.portfolio.personal && liveData.portfolio.personal.history) {
+    renderHistoryChart(liveData.portfolio.personal.history, 'chart-personal', '#2C4A3E');
+  }
+  if (liveData.portfolio.family && liveData.portfolio.family.history) {
+    renderHistoryChart(liveData.portfolio.family.history, 'chart-family', '#5C8A7A');
+  }
+}
+
+// ── MOBILE MENU ─────────────────────────────────────────
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+  document.querySelector('.nav-burger').classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.querySelector('.nav-burger').classList.remove('open');
+}
+
+// ── PAGE NAVIGATION ─────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
+  var page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  var nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  if (id === 'running') setTimeout(initMap, 150);
+  if (id === 'portfolio') setTimeout(drawCharts, 50);
+}
+
+// ── ROLLING TEXT (Consultant page) ──────────────────────
+var rollingWords = ['finanza personale.', 'carriera lavorativa.', 'corsa.', 'strategie aziendali.'];
+var rollingIdx = 0;
+function rotateText() {
+  var el = document.getElementById('rolling-text');
+  if (!el) return;
+  el.classList.add('out');
+  setTimeout(function() {
+    rollingIdx = (rollingIdx + 1) % rollingWords.length;
+    el.textContent = rollingWords[rollingIdx];
+    el.classList.remove('out');
+  }, 400);
+}
+setInterval(rotateText, 2200);
+
+// ── PORTFOLIO DATA ───────────────────────────────────────
+var portfolios = {
+  personal: {
+    holdings: [
+      { name:'Amundi Core Nasdaq-100 Swap UCITS ETF Acc', isin:'LU1829221024', ticker:'UST',  exchange:'EPA', qty:108, avgPrice:74.16,  currentPrice:107.453, lastBuy:'\u2014', link:'https://www.amundietf.it/it/privati/products/equity/amundi-core-nasdaq100-swap-ucits-etf-acc/lu1829221024', yahooSymbol:'UST.PA' },
+      { name:'iShares Core MSCI World UCITS ETF USD (Acc)', isin:'IE00B4L5Y983', ticker:'EUNL', exchange:'TDG', qty:229, avgPrice:102.54, currentPrice:124.525, lastBuy:'09.06.2026', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund', yahooSymbol:'EUNL.DE' },
+      { name:'Vanguard FTSE All-World UCITS ETF (USD) Acc', isin:'IE00BK5BQT80', ticker:'VWCE', exchange:'TDG', qty:62, avgPrice:143.50, currentPrice:164.88, lastBuy:'\u2014', link:'https://www.it.vanguard/investitori-privati/prodotti/etf/azionario/9679/ftse-all-world-ucits-etf-usd-accumulating', yahooSymbol:'VWCE.DE' },
+      { name:'iShares Edge MSCI World Momentum Factor UCITS ETF USD (Acc)', isin:'IE00BP3QZ825', ticker:'IS3R', exchange:'XET', qty:228, avgPrice:54.74, currentPrice:105.98, lastBuy:'\u2014', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/270051/ishares-msci-world-momentum-factor-ucits-etf?switchLocale=y&siteEntryPassthrough=true', yahooSymbol:'IS3R.DE' },
+    ],
+    PERF_YTD:0.0, PERF_1Y:0.0, PERF_INCEPTION:0.0
+  },
+  family: {
+    holdings: [
+      { name:'iShares Core MSCI World UCITS ETF USD (Acc)', isin:'IE00B4L5Y983', ticker:'EUNL', exchange:'TDG', qty:413, avgPrice:121.00, currentPrice:124.525, lastBuy:'15.05.2026', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund', yahooSymbol:'EUNL.DE' },
+    ],
+    PERF_YTD:0.0, PERF_1Y:0.0, PERF_INCEPTION:0.0
+  }
+};
+var activePortfolio = 'personal';
+
+function switchPortfolio(key) {
+  activePortfolio = key;
+  var isP = key === 'personal';
+  document.getElementById('chart-personal').style.display    = isP ? 'block' : 'none';
+  document.getElementById('chart-family').style.display      = isP ? 'none'  : 'block';
+  document.getElementById('perf-big-personal').style.display = isP ? 'block' : 'none';
+  document.getElementById('perf-big-family').style.display   = isP ? 'none'  : 'block';
+  var tabP = document.getElementById('tab-personal');
+  var tabF = document.getElementById('tab-family');
+  tabP.style.background = isP ? 'var(--ink)' : 'transparent';
+  tabP.style.color      = isP ? 'var(--cream)' : 'var(--ink-muted)';
+  tabP.style.border     = isP ? 'none' : '1px solid var(--border)';
+  tabF.style.background = isP ? 'transparent' : 'var(--ink)';
+  tabF.style.color      = isP ? 'var(--ink-muted)' : 'var(--cream)';
+  tabF.style.border     = isP ? '1px solid var(--border)' : 'none';
+  renderPortfolio();
+  drawCharts();
+}
+
+function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
+function perfClass(n) { return n >= 0 ? 'perf-pos' : 'perf-neg'; }
+
+function renderPortfolio() {
+  var p = portfolios[activePortfolio];
+  var h = p.holdings;
+  var totalInvested = h.reduce(function(s,x){ return s + x.qty * x.avgPrice; }, 0);
+  var totalValue    = h.reduce(function(s,x){ return s + x.qty * x.currentPrice; }, 0);
+
+  document.getElementById('perf-summary').innerHTML = '';
+
+  document.getElementById('holdings-body').innerHTML = h.map(function(x) {
+    var value  = x.qty * x.currentPrice;
+    var perf   = ((x.currentPrice - x.avgPrice) / x.avgPrice) * 100;
+    var weight = (value / totalValue) * 100;
+    var nameCell = '<a href="' + x.link + '" target="_blank" style="color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)">' + x.name + '</a>';
+    return '<tr>' +
+      '<td><div style="font-weight:400;color:var(--ink);margin-bottom:2px">' + nameCell + '</div>' +
+      '<div style="font-size:11px;color:var(--ink-faint)">' + x.ticker + ' &middot; ' + x.isin + '</div></td>' +
+      '<td style="text-align:right"><span class="' + perfClass(perf) + '" style="font-size:15px">' + fmtPct(perf) + '</span></td>' +
+      '<td style="text-align:right">' + weight.toFixed(1) + '%</td>' +
+      '</tr>';
+  }).join('');
+
+  document.getElementById('holdings-foot').innerHTML = '';
+  document.getElementById('porto-update').textContent = 'Ultimo aggiornamento: da definire';
+}
+renderPortfolio();
+formatKm();
+loadLiveData();
+
+function formatKm() {
+  var el = document.getElementById('km-total');
+  if (!el) return;
+  var n = parseFloat(el.textContent.replace('.','').replace(',','.'));
+  if (!isNaN(n)) el.textContent = n.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1});
+}
+
+// ── HISTORY CHART (with touch support) ──────────────────
 function renderHistoryChart(history, containerId, color) {
   var container = document.getElementById(containerId);
   if (!container || !history || history.length < 2) return;
@@ -587,11 +746,9 @@ function renderHistoryChart(history, containerId, color) {
     tooltip.style.opacity = '0';
   }
 
-  // Mouse events (desktop)
   svgEl.addEventListener('mousemove', function(e) { showAtClientX(e.clientX); });
   svgEl.addEventListener('mouseleave', hideTooltip);
 
-  // Touch events (mobile)
   svgEl.addEventListener('touchstart', function(e) {
     if (e.touches.length) showAtClientX(e.touches[0].clientX);
   }, {passive: true});
@@ -603,118 +760,15 @@ function renderHistoryChart(history, containerId, color) {
   });
 }
 
-function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
-function perfClass(n) { return n >= 0 ? 'perf-pos' : 'perf-neg'; }
-
-function renderPortfolio() {
-  var p = portfolios[activePortfolio];
-  var h = p.holdings;
-  var totalInvested = h.reduce(function(s,x){ return s + x.qty * x.avgPrice; }, 0);
-  var totalValue    = h.reduce(function(s,x){ return s + x.qty * x.currentPrice; }, 0);
-  var totalPerf     = ((totalValue - totalInvested) / totalInvested) * 100;
-
-  var cards = [];
-  document.getElementById('perf-summary').innerHTML = cards.map(function(c) {
-    var cls = c.value >= 0 ? 'positive' : 'negative';
-    return '<div class="perf-card"><div class="perf-value ' + cls + '">' + fmtPct(c.value) + '</div><div class="perf-period">' + c.label + '</div></div>';
-  }).join('');
-
-  document.getElementById('holdings-body').innerHTML = h.map(function(x) {
-    var value  = x.qty * x.currentPrice;
-    var perf   = ((x.currentPrice - x.avgPrice) / x.avgPrice) * 100;
-    var weight = (value / totalValue) * 100;
-    var nameCell = '<a href="' + x.link + '" target="_blank" style="color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)">' + x.name + '</a>';
-    return '<tr>' +
-      '<td><div style="font-weight:400;color:var(--ink);margin-bottom:2px">' + nameCell + '</div>' +
-      '<div style="font-size:11px;color:var(--ink-faint)">' + x.ticker + ' &middot; ' + x.isin + '</div></td>' +
-      '<td style="text-align:right"><span class="' + perfClass(perf) + '" style="font-size:15px">' + fmtPct(perf) + '</span></td>' +
-      '<td style="text-align:right">' + weight.toFixed(1) + '%</td>' +
-      '</tr>';
-  }).join('');
-
-  document.getElementById('holdings-foot').innerHTML = '';
-  document.getElementById('porto-update').textContent = 'Ultimo aggiornamento: da definire';
-  renderPieChart(h, totalValue);
-}
-
-function renderPieChart(holdings, totalValue) {
-  var canvas = document.getElementById('pie-chart');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-
-  var colors = ['#2C4A3E', '#5C8A7A', '#A8C5BC', '#D4E8E3', '#1A2E28', '#8AB5AB'];
-  var cx = W/2, cy = H/2, r = W/2 - 20, innerR = r * 0.55;
-  var total = holdings.reduce(function(s,h){ return s + h.qty * h.currentPrice; }, 0);
-
-  var startAngle = -Math.PI/2;
-  holdings.forEach(function(h, i) {
-    var weight = (h.qty * h.currentPrice) / total;
-    var slice  = weight * 2 * Math.PI;
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, r, startAngle, startAngle + slice);
-    ctx.closePath();
-    ctx.fillStyle = colors[i % colors.length];
-    ctx.fill();
-    ctx.strokeStyle = '#F7F5F0';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    startAngle += slice;
-  });
-
-  // Inner circle (donut hole)
-  ctx.beginPath();
-  ctx.arc(cx, cy, innerR, 0, 2 * Math.PI);
-  ctx.fillStyle = '#F7F5F0';
-  ctx.fill();
-
-  // Center text
-  ctx.fillStyle = '#1A1A18';
-  ctx.font = '300 13px "DM Sans", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(holdings.length + ' ETF', cx, cy + 5);
-
-  // Legend
-  var legend = document.getElementById('pie-legend');
-  if (!legend) return;
-  legend.innerHTML = holdings.map(function(h, i) {
-    var weight = ((h.qty * h.currentPrice) / total * 100).toFixed(1);
-    var perf   = ((h.currentPrice - h.avgPrice) / h.avgPrice * 100).toFixed(2);
-    var perfSign = perf >= 0 ? '+' : '';
-    var perfColor = perf >= 0 ? '#2C6E49' : '#C1440E';
-    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">' +
-      '<div style="width:12px;height:12px;border-radius:2px;background:' + colors[i % colors.length] + ';flex-shrink:0"></div>' +
-      '<div style="flex:1">' +
-        '<div style="font-size:13px;font-weight:400;color:var(--ink)">' + h.name + '</div>' +
-        '<div style="font-size:11px;color:var(--ink-faint);letter-spacing:0.05em">' + h.ticker + ' &middot; ' + weight + '%</div>' +
-      '</div>' +
-      '<div style="font-size:15px;font-weight:500;color:' + perfColor + '">' + perfSign + perf + '%</div>' +
-    '</div>';
-  }).join('');
-}
-renderPortfolio();
-formatKm();
-loadLiveData();
-
-function formatKm() {
-  var el = document.getElementById('km-total');
-  if (!el) return;
-  var n = parseFloat(el.textContent.replace('.','').replace(',','.'));
-  if (!isNaN(n)) el.textContent = n.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1});
-}
-
-
-// RACES
+// ── RACES ─────────────────────────────────────────────────
 var races = [
-  { name:'Deejay Ten',     place:'Treviso',    date:'18.05.2025', dateSort:'20250518', lat:45.6669, lng:12.2431, dist:9.80,  time:'46:08', timeSec:2768, pace:"4′42″/km", paceSec:282, bib:'—',   dnf:false },
-  { name:'Trofeo Sempione',place:'Milano',     date:'15.06.2025', dateSort:'20250615', lat:45.4654, lng:9.1859,  dist:7.58,  time:'35:58', timeSec:2158, pace:"4′45″/km", paceSec:285, bib:'—',   dnf:true  },
-  { name:'Emergency Run',  place:'Milano',     date:'14.09.2025', dateSort:'20250914', lat:45.4654, lng:9.1859,  dist:10.14, time:'44:59', timeSec:2699, pace:"4′26″/km", paceSec:266, bib:'153',  dnf:false },
-  { name:'Salomon Run',    place:'Milano',     date:'05.10.2025', dateSort:'20251005', lat:45.4654, lng:9.1859,  dist:10.69, time:'46:40', timeSec:2800, pace:"4′22″/km", paceSec:262, bib:'3806', dnf:false },
-  { name:'Varese City Run',place:'Varese',     date:'26.10.2025', dateSort:'20251026', lat:45.8206, lng:8.8257,  dist:10.14, time:'43:31', timeSec:2611, pace:"4′17″/km", paceSec:257, bib:'1340', dnf:false },
-  { name:'Salomon Run',    place:'Barcellona', date:'11.04.2026', dateSort:'20260411', lat:41.3851, lng:2.1734,  dist:9.35,  time:'44:35', timeSec:2675, pace:"4′46″/km", paceSec:286, bib:'28',   dnf:false },
-  { name:'Stay Sano Run',  place:'Milano',     date:'10.05.2026', dateSort:'20260510', lat:45.4654, lng:9.1859,  dist:12.63, time:'52:12', timeSec:3132, pace:"4′08″/km", paceSec:248, bib:'1096', dnf:false }
+  { name:'Deejay Ten',      place:'Treviso',     date:'18.05.2025', dateSort:'20250518', lat:45.6669, lng:12.2431, dist:9.80,  time:'46:08', timeSec:2768, pace:"4\u203242\u2033/km", paceSec:282, bib:'\u2014',   dnf:false },
+  { name:'Trofeo Sempione', place:'Milano',      date:'15.06.2025', dateSort:'20250615', lat:45.4654, lng:9.1859,  dist:7.58,  time:'35:58', timeSec:2158, pace:"4\u203245\u2033/km", paceSec:285, bib:'\u2014',   dnf:true  },
+  { name:'Emergency Run',   place:'Milano',      date:'14.09.2025', dateSort:'20250914', lat:45.4654, lng:9.1859,  dist:10.14, time:'44:59', timeSec:2699, pace:"4\u203226\u2033/km", paceSec:266, bib:'153',  dnf:false },
+  { name:'Salomon Run',     place:'Milano',      date:'05.10.2025', dateSort:'20251005', lat:45.4654, lng:9.1859,  dist:10.69, time:'46:40', timeSec:2800, pace:"4\u203222\u2033/km", paceSec:262, bib:'3806', dnf:false },
+  { name:'Varese City Run', place:'Varese',      date:'26.10.2025', dateSort:'20251026', lat:45.8206, lng:8.8257,  dist:10.14, time:'43:31', timeSec:2611, pace:"4\u203217\u2033/km", paceSec:257, bib:'1340', dnf:false },
+  { name:'Salomon Run',     place:'Barcellona',  date:'11.04.2026', dateSort:'20260411', lat:41.3851, lng:2.1734,  dist:9.35,  time:'44:35', timeSec:2675, pace:"4\u203246\u2033/km", paceSec:286, bib:'28',   dnf:false },
+  { name:'Stay Sano Run',   place:'Milano',      date:'10.05.2026', dateSort:'20260510', lat:45.4654, lng:9.1859,  dist:12.63, time:'52:12', timeSec:3132, pace:"4\u203208\u2033/km", paceSec:248, bib:'1096', dnf:false }
 ];
 var rSortField = 'dateSort', rSortDir = 1;
 
@@ -749,14 +803,14 @@ function sortRaces(field, th) {
 }
 renderRaces();
 
-// MAP
+// ── MAP (Leaflet) ────────────────────────────────────────
 var mapInitialized = false;
 function initMap() {
   if (mapInitialized) return;
   mapInitialized = true;
   var map = L.map('race-map').setView([44.5, 6.0], 5);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
+    attribution: '\u00A9 OpenStreetMap \u00A9 CARTO', maxZoom: 19
   }).addTo(map);
   var icon = L.divIcon({
     className: '',
