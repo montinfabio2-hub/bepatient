@@ -464,8 +464,11 @@ function applyLiveData() {
   if (!liveData) return;
 
   var kmEl = document.getElementById('km-total');
-  if (kmEl && liveData.km_total) {
-    kmEl.textContent = liveData.km_total.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1});
+  if (kmEl) {
+    var kmBase = liveData.km_base || 903.2;
+    var kmStrava = liveData.km_strava || 0;
+    var kmTotal = Math.round((kmBase + kmStrava) * 10) / 10;
+    kmEl.textContent = kmTotal.toLocaleString('it-IT', {minimumFractionDigits:1, maximumFractionDigits:1});
   }
 
   if (liveData.portfolio && liveData.portfolio.prices) {
@@ -556,7 +559,7 @@ var portfolios = {
   },
   family: {
     holdings: [
-      { name:'iShares Core MSCI World UCITS ETF USD (Acc)', isin:'IE00B4L5Y983', ticker:'EUNL', exchange:'TDG', qty:413, avgPrice:121.00, currentPrice:124.525, lastBuy:'15.05.2026', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund', yahooSymbol:'EUNL.DE' },
+      { name:'iShares Core MSCI World UCITS ETF USD (Acc)', isin:'IE00B4L5Y983', ticker:'EUNL', exchange:'TDG', qty:493, avgPrice:121.65, currentPrice:124.525, lastBuy:'01.07.2026', link:'https://www.ishares.com/it/investitore-privato/it/prodotti/251882/ishares-msci-world-ucits-etf-acc-fund', yahooSymbol:'EUNL.DE' },
     ],
     PERF_YTD:0.0, PERF_1Y:0.0, PERF_INCEPTION:0.0
   }
