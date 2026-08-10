@@ -10,15 +10,17 @@
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://montinfabio2-hub.github.io/bepatient/">
 <meta property="og:title" content="BePatient — Fabio Montin">
 <meta property="og:description" content="Manager, self-investor e runner. Finanza personale, carriera e corsa.">
 <meta property="og:locale" content="it_IT">
-<meta property="og:image" content="cover.webp">
+<meta property="og:image" content="https://montinfabio2-hub.github.io/bepatient/cover.webp">
 
 <!-- Twitter -->
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BePatient — Fabio Montin">
 <meta name="twitter:description" content="Manager, self-investor e runner. Finanza personale, carriera e corsa.">
+<meta name="twitter:image" content="https://montinfabio2-hub.github.io/bepatient/cover.webp">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -38,6 +40,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(247,245,240,
 .nav-links a.active{background:var(--ink);color:var(--cream)}
 .pages-wrapper{position:fixed;top:64px;left:0;right:0;bottom:0;overflow:hidden}
 .page{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:visible;padding:70px 5vw 60px;opacity:0;pointer-events:none;transform:translateY(16px);transition:opacity 0.35s ease,transform 0.35s ease}
+@media (prefers-reduced-motion: reduce) {
+  .page { transition: none; transform: none; }
+  .skip-link { transition: none; }
+  #rolling-text { transition: none; }
+}
 .page.active{opacity:1;pointer-events:all;transform:translateY(0)}
 .page.no-scroll{overflow-y:hidden;display:flex;flex-direction:column;justify-content:center}
 .section-label{font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
@@ -82,8 +89,9 @@ h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:1.
 .slot-name{font-size:15px;font-weight:400;margin-bottom:0.5rem}
 .slot-desc{font-size:14px;color:var(--ink-muted);font-weight:300;line-height:1.6;margin-bottom:1.5rem}
 .slot-book{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);font-weight:400;display:inline-flex;align-items:center;gap:8px;background:none;border:none;font-family:"DM Sans",sans-serif;cursor:pointer;padding:0}
+.slot-book:disabled{opacity:0.55;cursor:not-allowed}
 .slot-book::after{content:"→";transition:transform 0.2s}
-.slot-card:hover .slot-book::after{transform:translateX(4px)}
+.slot-card:hover .slot-book:not(:disabled)::after{transform:translateX(4px)}
 .portfolio-disclaimer{display:inline-flex;align-items:center;gap:8px;background:var(--accent-light);color:var(--accent);font-size:12px;padding:8px 16px;border-radius:2px;margin-top:1.5rem;font-weight:400}
 .perf-grid{display:grid;grid-template-columns:repeat(1,1fr);max-width:240px !important;gap:1px;background:var(--border);border:1px solid var(--border);max-width:700px;margin-bottom:2.5rem}
 .perf-card{background:var(--cream);padding:1.5rem;text-align:center}
@@ -195,12 +203,36 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
   outline-offset: 2px;
 }
 
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--ink);
+  color: var(--cream);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-radius: 2px;
+  z-index: 1000;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 16px;
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 </style>
 </head>
 <body>
 
+<a href="#main-content" class="skip-link">Salta al contenuto</a>
+
 <nav>
-  <button class="nav-logo" onclick="showPage('home')">BePatient</button>
+  <button class="nav-logo" onclick="showPage('home')" aria-label="BePatient — Torna alla home">BePatient</button>
   <ul class="nav-links">
     <li><a href="#" onclick="showPage('about');return false" id="nav-about">About me</a></li>
     <li><a href="#" onclick="showPage('career');return false" id="nav-career">Career</a></li>
@@ -209,7 +241,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
     <li><a href="#" onclick="showPage('portfolio');return false" id="nav-portfolio">Portfolio</a></li>
     <li><a href="#" onclick="showPage('running');return false" id="nav-running">Running</a></li>
   </ul>
-  <button class="nav-burger" onclick="toggleMobileMenu()" aria-label="Menu">
+  <button class="nav-burger" onclick="toggleMobileMenu()" aria-label="Apri o chiudi menu" aria-expanded="false" aria-controls="mobile-menu" id="nav-burger-btn">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -222,7 +254,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
   <a href="#" onclick="showPage('running');closeMobileMenu();return false">Running</a>
 </div>
 
-<div class="pages-wrapper">
+<main class="pages-wrapper" id="main-content">
 
 <div class="page active" id="page-home">
   <div>
@@ -235,7 +267,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
     <p class="hero-mantra" id="mantra">Every step counts</p>
   </div>
   <div style="position:absolute;bottom:2rem;right:5vw;display:flex;align-items:center;gap:1rem">
-    <a href="https://www.linkedin.com/in/fabio-montin-977a7216b" target="_blank" style="display:flex;align-items:center;color:var(--ink-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-muted)'">
+    <a href="https://www.linkedin.com/in/fabio-montin-977a7216b" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;color:var(--ink-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-muted)'">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
     </a>
     <span style="color:var(--border);font-size:18px;font-weight:200">|</span>
@@ -266,7 +298,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
     <div class="career-item">
       <div class="career-period">2026 &#8212; in corso</div>
       <div>
-        <a href="https://www.eso.it" target="_blank" class="career-company-link"><div class="career-company">ESO Societ&#224; Benefit</div></a>
+        <a href="https://www.eso.it" target="_blank" rel="noopener noreferrer" class="career-company-link"><div class="career-company">ESO Societ&#224; Benefit</div></a>
         <div class="career-role">General Manager</div>
         <p class="career-desc">Guida strategica e operativa di una realt&#224; innovativa nel settore dell&#8217;economia circolare. Leadership, sviluppo del business e sostenibilit&#224;.</p>
         <span class="career-tag">Economia Circolare &middot; Managing</span>
@@ -275,7 +307,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
     <div class="career-item">
       <div class="career-period">2022 &#8212; 2026</div>
       <div>
-        <a href="https://www.moncler.com" target="_blank" class="career-company-link"><div class="career-company">Moncler</div></a>
+        <a href="https://www.moncler.com" target="_blank" rel="noopener noreferrer" class="career-company-link"><div class="career-company">Moncler</div></a>
         <div class="career-role">Financial Controller</div>
         <p class="career-desc">Controllo finanziario e gestione del budget in uno dei brand del lusso pi&#249; riconosciuti al mondo, con focus specifico sul pricing.</p>
         <span class="career-tag">Lusso &middot; Pricing</span>
@@ -284,7 +316,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
     <div class="career-item">
       <div class="career-period">2023 &#8212; 2025</div>
       <div>
-        <a href="https://www.stoneisland.com" target="_blank" class="career-company-link"><div class="career-company">Stone Island</div></a>
+        <a href="https://www.stoneisland.com" target="_blank" rel="noopener noreferrer" class="career-company-link"><div class="career-company">Stone Island</div></a>
         <div class="career-role">Business Controller</div>
         <p class="career-desc">Analisi e controllo di gestione in un brand iconico del fashion italiano, con focus su performance e reportistica.</p>
         <span class="career-tag">Fashion &middot; Controller</span>
@@ -293,7 +325,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
     <div class="career-item">
       <div class="career-period">2019 &#8212; 2022</div>
       <div>
-        <a href="https://www.missoni.com" target="_blank" class="career-company-link"><div class="career-company">Missoni</div></a>
+        <a href="https://www.missoni.com" target="_blank" rel="noopener noreferrer" class="career-company-link"><div class="career-company">Missoni</div></a>
         <div class="career-role">Junior Controller</div>
         <p class="career-desc">Primi passi nel controllo di gestione in una delle maison pi&#249; creative e storiche del Made in Italy.</p>
         <span class="career-tag">Lusso &middot; Controller</span>
@@ -307,7 +339,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
   <div class="book-wrapper">
     <div class="book-grid">
       <div class="book-cover">
-        <img src="cover.webp" alt="Copertina del libro Soltanto gli alberi crescono da soli di Fabio Montin" style="width:100%;height:100%;object-fit:cover;border-radius:4px;display:block" loading="lazy">
+        <img src="cover.webp" alt="Copertina del libro Soltanto gli alberi crescono da soli di Fabio Montin" width="600" height="800" style="width:100%;height:100%;object-fit:cover;border-radius:4px;display:block" loading="lazy">
       </div>
       <div class="book-info">
         <h3>Manuale per i giovani risparmiatori.</h3>
@@ -323,7 +355,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
             <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,245,240,0.4)">Anno</div>
           </div>
         </div>
-        <a href="https://www.amazon.it/Soltanto-gli-alberi-crescono-soli/dp/B0B5KV546K/" target="_blank" class="btn btn-light">Acquista su Amazon</a>
+        <a href="https://www.amazon.it/Soltanto-gli-alberi-crescono-soli/dp/B0B5KV546K/" target="_blank" rel="noopener noreferrer" class="btn btn-light">Acquista su Amazon</a>
       </div>
     </div>
   </div>
@@ -338,21 +370,21 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
       <div class="slot-unit">minuti</div>
       <div class="slot-name">Discovery call</div>
       <p class="slot-desc">Una prima conversazione gratuita per capire la tua situazione e vedere se posso esserti utile.</p>
-      <button class="slot-book">Prenota</button>
+      <button class="slot-book" type="button" disabled aria-label="Prenotazione in arrivo">Prenota</button>
     </div>
     <div class="slot-card">
       <div class="slot-duration">60</div>
       <div class="slot-unit">minuti</div>
       <div class="slot-name">Sessione completa</div>
       <p class="slot-desc">Analisi della situazione, obiettivi, strumenti e piano d&#8217;azione personalizzato.</p>
-      <button class="slot-book">Prenota</button>
+      <button class="slot-book" type="button" disabled aria-label="Prenotazione in arrivo">Prenota</button>
     </div>
     <div class="slot-card">
       <div class="slot-duration">90</div>
       <div class="slot-unit">minuti</div>
       <div class="slot-name">Deep dive</div>
       <p class="slot-desc">Per chi vuole andare pi&#249; a fondo: portafoglio, allocazione, strategie di lungo periodo.</p>
-      <button class="slot-book">Prenota</button>
+      <button class="slot-book" type="button" disabled aria-label="Prenotazione in arrivo">Prenota</button>
     </div>
   </div>
   <p style="font-size:13px;color:var(--ink-faint);font-style:italic;margin-top:1.5rem">* I link di prenotazione verranno attivati a breve.</p>
@@ -471,7 +503,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
   </div>
 </div>
 
-</div>
+</main>
 
 <script>
 // ── LIVE DATA from data.json (updated by GitHub Actions) ──
@@ -522,6 +554,32 @@ function applyLiveData() {
     }
   }
 
+  // Last update date
+  var updateEl = document.getElementById('porto-update');
+  if (updateEl) {
+    var raw = liveData.last_update || liveData.updated_at || liveData.portfolio?.last_update || null;
+    if (raw) {
+      try {
+        var d = new Date(raw);
+        if (!isNaN(d.getTime())) {
+          updateEl.textContent = 'Ultimo aggiornamento: ' + d.toLocaleDateString('it-IT', {
+            day: 'numeric', month: 'long', year: 'numeric'
+          });
+        } else {
+          updateEl.textContent = 'Ultimo aggiornamento: ' + raw;
+        }
+      } catch(e) {
+        updateEl.textContent = 'Ultimo aggiornamento: ' + raw;
+      }
+    } else {
+      // Fallback: today (useful while data.json is being set up)
+      var today = new Date();
+      updateEl.textContent = 'Ultimo aggiornamento: ' + today.toLocaleDateString('it-IT', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+    }
+  }
+
   renderPortfolio();
   drawCharts();
 }
@@ -538,13 +596,22 @@ function drawCharts() {
 
 // ── MOBILE MENU ─────────────────────────────────────────
 function toggleMobileMenu() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-  document.querySelector('.nav-burger').classList.toggle('open');
+  var menu = document.getElementById('mobile-menu');
+  var burger = document.getElementById('nav-burger-btn') || document.querySelector('.nav-burger');
+  var isOpen = menu.classList.toggle('open');
+  burger.classList.toggle('open', isOpen);
+  burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 }
 function closeMobileMenu() {
-  document.getElementById('mobile-menu').classList.remove('open');
-  document.querySelector('.nav-burger').classList.remove('open');
+  var menu = document.getElementById('mobile-menu');
+  var burger = document.getElementById('nav-burger-btn') || document.querySelector('.nav-burger');
+  menu.classList.remove('open');
+  burger.classList.remove('open');
+  burger.setAttribute('aria-expanded', 'false');
 }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeMobileMenu();
+});
 
 // ── PAGE NAVIGATION ─────────────────────────────────────
 function showPage(id) {
@@ -627,7 +694,7 @@ function renderPortfolio() {
     var value  = x.qty * x.currentPrice;
     var perf   = ((x.currentPrice - x.avgPrice) / x.avgPrice) * 100;
     var weight = (value / totalValue) * 100;
-    var nameCell = '<a href="' + x.link + '" target="_blank" style="color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)">' + x.name + '</a>';
+    var nameCell = '<a href="' + x.link + '" target="_blank" rel="noopener noreferrer" style="color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)">' + x.name + '</a>';
     return '<tr>' +
       '<td><div style="font-weight:400;color:var(--ink);margin-bottom:2px">' + nameCell + '</div>' +
       '<div style="font-size:11px;color:var(--ink-faint)">' + x.ticker + ' &middot; ' + x.isin + '</div></td>' +
@@ -637,7 +704,6 @@ function renderPortfolio() {
   }).join('');
 
   document.getElementById('holdings-foot').innerHTML = '';
-  document.getElementById('porto-update').textContent = 'Ultimo aggiornamento: da definire';
 }
 renderPortfolio();
 formatKm();
