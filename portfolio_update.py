@@ -62,7 +62,7 @@ purchases_personal = [
 ]
 purchases_family = [("2026-05-15","EUNL",413,121.00),
     ("2026-07-01","EUNL",80,125.00),("2026-07-17","EUNL",80,124.85),
-    ("2026-09-02","EUNL"79,125.98),]
+    ("2026-09-02","EUNL",79,125.98),]
 
 def current_perf(purchases, prices):
     h = defaultdict(lambda: {'qty':0,'cost':0.0})
