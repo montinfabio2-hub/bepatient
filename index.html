@@ -539,6 +539,18 @@ function applyLiveData() {
     });
   }
 
+  // Update qty and avgPrice from data.json holdings (single source of truth)
+  ['personal','family'].forEach(function(key) {
+    if (!liveData.portfolio[key] || !liveData.portfolio[key].holdings) return;
+    var liveH = liveData.portfolio[key].holdings;
+    portfolios[key].holdings.forEach(function(h) {
+      if (liveH[h.ticker]) {
+        h.qty      = liveH[h.ticker].qty;
+        h.avgPrice = liveH[h.ticker].avgPrice;
+      }
+    });
+  });
+
   if (liveData.portfolio) {
     if (liveData.portfolio.personal && document.getElementById('perf-big-personal')) {
       var pp = liveData.portfolio.personal.performance_pct;
@@ -682,17 +694,79 @@ function switchPortfolio(key) {
 function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
 function perfClass(n) { return n >= 0 ? 'perf-pos' : 'perf-neg'; }
 
+// Purchase history per portfolio — single source of truth
+var purchases = {
+  personal: [
+    {ticker:'UST',  qty:10,  price:54.625},
+    {ticker:'UST',  qty:46,  price:75.90},
+    {ticker:'UST',  qty:15,  price:67.85},
+    {ticker:'UST',  qty:37,  price:79.85},
+    {ticker:'EUNL', qty:22,  price:88.60},
+    {ticker:'EUNL', qty:26,  price:90.96},
+    {ticker:'EUNL', qty:26,  price:94.60},
+    {ticker:'EUNL', qty:31,  price:104.54},
+    {ticker:'EUNL', qty:11,  price:92.25},
+    {ticker:'EUNL', qty:15,  price:103.43},
+    {ticker:'EUNL', qty:34,  price:107.348},
+    {ticker:'EUNL', qty:22,  price:109.00},
+    {ticker:'EUNL', qty:8,   price:112.18},
+    {ticker:'EUNL', qty:7,   price:113.73},
+    {ticker:'EUNL', qty:7,   price:111.84},
+    {ticker:'EUNL', qty:13,  price:117.94},
+    {ticker:'EUNL', qty:7,   price:120.62},
+    {ticker:'IS3R', qty:8,   price:48.42},
+    {ticker:'IS3R', qty:11,  price:49.63},
+    {ticker:'IS3R', qty:10,  price:52.06},
+    {ticker:'IS3R', qty:5,   price:51.52},
+    {ticker:'IS3R', qty:5,   price:53.55},
+    {ticker:'IS3R', qty:5,   price:54.08},
+    {ticker:'IS3R', qty:5,   price:56.06},
+    {ticker:'IS3R', qty:5,   price:54.53},
+    {ticker:'IS3R', qty:5,   price:60.54},
+    {ticker:'IS3R', qty:4,   price:58.25},
+    {ticker:'IS3R', qty:5,   price:59.64},
+    {ticker:'IS3R', qty:5,   price:53.15},
+    {ticker:'IS3R', qty:10,  price:55.02},
+    {ticker:'IS3R', qty:6,   price:51.44},
+    {ticker:'IS3R', qty:6,   price:50.31},
+    {ticker:'IS3R', qty:11,  price:51.90},
+    {ticker:'IS3R', qty:11,  price:54.13},
+    {ticker:'IS3R', qty:12,  price:51.62},
+    {ticker:'IS3R', qty:8,   price:50.96},
+    {ticker:'IS3R', qty:8,   price:51.91},
+    {ticker:'IS3R', qty:8,   price:50.44},
+    {ticker:'IS3R', qty:8,   price:50.30},
+    {ticker:'IS3R', qty:16,  price:50.63},
+    {ticker:'IS3R', qty:16,  price:51.70},
+    {ticker:'IS3R', qty:35,  price:67.35},
+    {ticker:'VWCE', qty:21,  price:141.98},
+    {ticker:'VWCE', qty:21,  price:142.00},
+    {ticker:'VWCE', qty:20,  price:146.70},
+  ],
+  family: [
+    {ticker:'EUNL', qty:413, price:121.00},
+    {ticker:'EUNL', qty:80,  price:125.00},
+  ]
+};
+
+function calcAvgPrice(portfolioKey, ticker) {
+  var buys = purchases[portfolioKey].filter(function(p){ return p.ticker === ticker; });
+  var totalQty  = buys.reduce(function(s,p){ return s + p.qty; }, 0);
+  var totalCost = buys.reduce(function(s,p){ return s + p.qty * p.price; }, 0);
+  return totalQty > 0 ? totalCost / totalQty : 0;
+}
+
 function renderPortfolio() {
   var p = portfolios[activePortfolio];
   var h = p.holdings;
-  var totalInvested = h.reduce(function(s,x){ return s + x.qty * x.avgPrice; }, 0);
-  var totalValue    = h.reduce(function(s,x){ return s + x.qty * x.currentPrice; }, 0);
+  var totalValue = h.reduce(function(s,x){ return s + x.qty * x.currentPrice; }, 0);
 
   document.getElementById('perf-summary').innerHTML = '';
 
   document.getElementById('holdings-body').innerHTML = h.map(function(x) {
+    var avgP   = calcAvgPrice(activePortfolio, x.ticker);
     var value  = x.qty * x.currentPrice;
-    var perf   = ((x.currentPrice - x.avgPrice) / x.avgPrice) * 100;
+    var perf   = avgP > 0 ? ((x.currentPrice - avgP) / avgP) * 100 : 0;
     var weight = (value / totalValue) * 100;
     var nameCell = '<a href="' + x.link + '" target="_blank" rel="noopener noreferrer" style="color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)">' + x.name + '</a>';
     return '<tr>' +
