@@ -355,7 +355,7 @@ a:focus-visible, button:focus-visible, .nav-logo:focus-visible, .filter-btn:focu
             <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,245,240,0.4)">Anno</div>
           </div>
         </div>
-        <a href="https://www.amazon.it/Soltanto-gli-alberi-crescono-soli/dp/B0B5KV546K/" target="_blank" rel="noopener noreferrer" class="btn btn-light">Acquista ora</a>
+        <a href="https://www.amazon.it/Soltanto-gli-alberi-crescono-soli/dp/B0B5KV546K/" target="_blank" rel="noopener noreferrer" class="btn btn-light">Acquista su Amazon</a>
       </div>
     </div>
   </div>
@@ -545,8 +545,9 @@ function applyLiveData() {
     var liveH = liveData.portfolio[key].holdings;
     portfolios[key].holdings.forEach(function(h) {
       if (liveH[h.ticker]) {
-        h.qty      = liveH[h.ticker].qty;
-        h.avgPrice = liveH[h.ticker].avgPrice;
+        h.qty        = liveH[h.ticker].qty;
+        h.avgPrice   = liveH[h.ticker].avgPrice;
+        h.currentPrice = liveH[h.ticker].currentPrice;
       }
     });
   });
@@ -592,6 +593,7 @@ function applyLiveData() {
     }
   }
 
+  // Re-render AFTER all holdings data is updated from data.json
   renderPortfolio();
   drawCharts();
 }
@@ -759,15 +761,25 @@ function calcAvgPrice(portfolioKey, ticker) {
 function renderPortfolio() {
   var p = portfolios[activePortfolio];
   var h = p.holdings;
-  var totalValue = h.reduce(function(s,x){ return s + x.qty * x.currentPrice; }, 0);
+
+  // Use live holdings data from data.json if available
+  var liveHoldings = liveData && liveData.portfolio && liveData.portfolio[activePortfolio] && liveData.portfolio[activePortfolio].holdings;
+  var totalValue = h.reduce(function(s,x){
+    var cur = liveHoldings && liveHoldings[x.ticker] ? liveHoldings[x.ticker].currentPrice : x.currentPrice;
+    return s + x.qty * cur;
+  }, 0);
 
   document.getElementById('perf-summary').innerHTML = '';
 
   document.getElementById('holdings-body').innerHTML = h.map(function(x) {
-    var avgP   = calcAvgPrice(activePortfolio, x.ticker);
-    var value  = x.qty * x.currentPrice;
-    var perf   = avgP > 0 ? ((x.currentPrice - avgP) / avgP) * 100 : 0;
-    var weight = (value / totalValue) * 100;
+    // Always use data.json values if available — single source of truth
+    var live   = liveHoldings && liveHoldings[x.ticker];
+    var avgP   = live ? live.avgPrice   : x.avgPrice;
+    var cur    = live ? live.currentPrice : x.currentPrice;
+    var qty    = live ? live.qty         : x.qty;
+    var perf   = live ? live.perf_pct    : ((cur - avgP) / avgP) * 100;
+    var value  = qty * cur;
+    var weight = totalValue > 0 ? (value / totalValue) * 100 : 0;
     var nameCell = '<a href="' + x.link + '" target="_blank" rel="noopener noreferrer" style="color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)">' + x.name + '</a>';
     return '<tr>' +
       '<td><div style="font-weight:400;color:var(--ink);margin-bottom:2px">' + nameCell + '</div>' +
