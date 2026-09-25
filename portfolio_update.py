@@ -31,55 +31,98 @@ for ticker, symbol in etfs.items():
         prices[ticker] = p
         print(f"  {ticker}: {p}")
 
-# Purchase history
+# ── ACQUISTI — aggiungi qui ogni nuovo acquisto ──────────
 purchases_personal = [
-    ("2023-08-17","UST",7,54.625),("2023-08-17","UST",3,54.625),
-    ("2024-07-08","UST",46,75.90),("2025-04-04","UST",15,67.85),
+    ("2023-08-17","UST",10,54.625),
+    ("2024-07-08","UST",46,75.90),
+    ("2025-04-04","UST",15,67.85),
     ("2025-07-22","UST",37,79.85),
-    ("2024-04-25","EUNL",22,88.60),("2024-05-31","EUNL",26,90.96),
-    ("2024-07-19","EUNL",26,94.60),("2025-01-08","EUNL",31,104.54),
-    ("2025-04-04","EUNL",11,92.25),("2025-08-01","EUNL",15,103.43),
-    ("2025-09-30","EUNL",34,107.348),("2025-11-07","EUNL",22,109.00),
-    ("2026-01-20","EUNL",8,112.18),("2026-02-26","EUNL",7,113.73),
-    ("2026-03-13","EUNL",7,111.84),("2026-05-14","EUNL",13,117.94),
-    ("2026-06-09","EUNL",7,120.62),("2026-07-06","EUNL",6,126.00),
+    ("2024-04-25","EUNL",22,88.60),
+    ("2024-05-31","EUNL",26,90.96),
+    ("2024-07-19","EUNL",26,94.60),
+    ("2025-01-08","EUNL",31,104.54),
+    ("2025-04-04","EUNL",11,92.25),
+    ("2025-08-01","EUNL",15,103.43),
+    ("2025-09-30","EUNL",34,107.348),
+    ("2025-11-07","EUNL",22,109.00),
+    ("2026-01-20","EUNL",8,112.18),
+    ("2026-02-26","EUNL",7,113.73),
+    ("2026-03-13","EUNL",7,111.84),
+    ("2026-05-14","EUNL",13,117.94),
+    ("2026-06-09","EUNL",7,120.62),
+    ("2026-07-06","EUNL",6,126.00),
     ("2026-09-01","EUNL",13,126.40),
-    ("2021-01-04","IS3R",8,48.42),("2021-03-01","IS3R",11,49.63),
-    ("2021-04-05","IS3R",10,52.06),("2021-06-01","IS3R",5,51.52),
-    ("2021-07-05","IS3R",5,53.55),("2021-08-03","IS3R",5,54.08),
-    ("2021-09-01","IS3R",5,56.06),("2021-10-01","IS3R",5,54.53),
-    ("2021-11-19","IS3R",5,60.54),("2021-12-02","IS3R",4,58.25),
-    ("2022-01-03","IS3R",5,59.64),("2022-02-18","IS3R",5,53.15),
-    ("2022-04-22","IS3R",10,55.02),("2022-05-09","IS3R",6,51.44),
-    ("2022-06-13","IS3R",6,50.31),("2022-09-16","IS3R",11,51.90),
-    ("2022-12-02","IS3R",11,54.13),("2022-12-19","IS3R",12,51.62),
-    ("2023-01-31","IS3R",8,50.96),("2023-02-10","IS3R",8,51.91),
-    ("2023-03-10","IS3R",8,50.44),("2023-04-26","IS3R",8,50.30),
-    ("2023-06-27","IS3R",16,50.63),("2023-08-11","IS3R",16,51.70),
-    ("2024-08-02","IS3R",34,67.35),("2024-08-02","IS3R",1,67.35),
-    ("2025-11-07","VWCE",21,141.98),("2025-12-17","VWCE",21,142.00),
+    ("2021-01-04","IS3R",8,48.42),
+    ("2021-03-01","IS3R",11,49.63),
+    ("2021-04-05","IS3R",10,52.06),
+    ("2021-06-01","IS3R",5,51.52),
+    ("2021-07-05","IS3R",5,53.55),
+    ("2021-08-03","IS3R",5,54.08),
+    ("2021-09-01","IS3R",5,56.06),
+    ("2021-10-01","IS3R",5,54.53),
+    ("2021-11-19","IS3R",5,60.54),
+    ("2021-12-02","IS3R",4,58.25),
+    ("2022-01-03","IS3R",5,59.64),
+    ("2022-02-18","IS3R",5,53.15),
+    ("2022-04-22","IS3R",10,55.02),
+    ("2022-05-09","IS3R",6,51.44),
+    ("2022-06-13","IS3R",6,50.31),
+    ("2022-09-16","IS3R",11,51.90),
+    ("2022-12-02","IS3R",11,54.13),
+    ("2022-12-19","IS3R",12,51.62),
+    ("2023-01-31","IS3R",8,50.96),
+    ("2023-02-10","IS3R",8,51.91),
+    ("2023-03-10","IS3R",8,50.44),
+    ("2023-04-26","IS3R",8,50.30),
+    ("2023-06-27","IS3R",16,50.63),
+    ("2023-08-11","IS3R",16,51.70),
+    ("2024-08-02","IS3R",35,67.35),
+    ("2025-11-07","VWCE",21,141.98),
+    ("2025-12-17","VWCE",21,142.00),
     ("2026-01-20","VWCE",20,146.70),
 ]
-purchases_family = [("2026-05-15","EUNL",413,121.00),
-    ("2026-07-01","EUNL",80,125.00),("2026-07-17","EUNL",80,124.85),
-    ("2026-09-02","EUNL",79,125.98),]
 
-def current_perf(purchases, prices):
+purchases_family = [
+    ("2026-05-15","EUNL",413,121.00),
+    ("2026-07-01","EUNL",80,125.00),
+    ("2026-09-02","EUNL",79,125.98),
+]
+
+def calc_holdings(purchases, prices):
+    """Calcola qty totale, costo medio, valore attuale e % per ogni ETF."""
     h = defaultdict(lambda: {'qty':0,'cost':0.0})
     for _, t, q, p in purchases:
         h[t]['qty'] += q
         h[t]['cost'] += q*p
-    total_cost = sum(v['cost'] for v in h.values())
-    total_value = sum(v['qty']*prices.get(t, v['cost']/v['qty'] if v['qty'] else 0) for t,v in h.items())
-    if total_cost == 0:
-        return 0.0
-    return round((total_value-total_cost)/total_cost*100, 2)
+    result = {}
+    for ticker, v in h.items():
+        if v['qty'] == 0: continue
+        avg = v['cost'] / v['qty']
+        cur = prices.get(ticker, avg)
+        perf = (cur - avg) / avg * 100
+        result[ticker] = {
+            'qty': v['qty'],
+            'avgPrice': round(avg, 4),
+            'currentPrice': cur,
+            'perf_pct': round(perf, 2),
+            'invested': round(v['cost'], 2),
+            'value': round(v['qty'] * cur, 2),
+        }
+    return result
 
-perf_personal = current_perf(purchases_personal, prices)
-perf_family   = current_perf(purchases_family, prices)
+holdings_p = calc_holdings(purchases_personal, prices)
+holdings_f = calc_holdings(purchases_family, prices)
+
+def portfolio_perf(holdings):
+    total_invested = sum(h['invested'] for h in holdings.values())
+    total_value    = sum(h['value']    for h in holdings.values())
+    if total_invested == 0: return 0.0
+    return round((total_value - total_invested) / total_invested * 100, 2)
+
+perf_personal = portfolio_perf(holdings_p)
+perf_family   = portfolio_perf(holdings_f)
 print(f"Personal: {perf_personal}%  Family: {perf_family}%")
 
-# Build monthly history for chart (personal only, has real history)
 def build_monthly(purchases, prices, end_month=None):
     if end_month is None:
         end_month = date.today().strftime('%Y-%m')
@@ -124,14 +167,13 @@ def build_monthly(purchases, prices, end_month=None):
 history_personal = build_monthly(purchases_personal, prices)
 history_family   = build_monthly(purchases_family, prices)
 
-# Force last history point to match exact current performance (no rounding/interpolation drift)
+# Force last point to match exact perf
 current_month = date.today().strftime('%Y-%m')
 if history_personal and history_personal[-1]['m'] == current_month:
     history_personal[-1]['pct'] = perf_personal
 if history_family and history_family[-1]['m'] == current_month:
     history_family[-1]['pct'] = perf_family
 
-# Read/update data.json
 try:
     with open('data.json', 'r') as f:
         site_data = json.load(f)
@@ -141,10 +183,12 @@ except FileNotFoundError:
 site_data['portfolio'] = {
     'personal': {
         'performance_pct': perf_personal,
+        'holdings': holdings_p,   # avgPrice, qty, perf per ETF
         'history': history_personal,
     },
     'family': {
         'performance_pct': perf_family,
+        'holdings': holdings_f,
         'history': history_family,
     },
     'prices': prices,
